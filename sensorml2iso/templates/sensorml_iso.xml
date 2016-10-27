@@ -1,0 +1,550 @@
+<?xml version='1.0' encoding='utf-8'?>
+<gmi:MI_Metadata
+				xmlns:gmi="http://www.isotc211.org/2005/gmi"
+				xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				xmlns:gmd="http://www.isotc211.org/2005/gmd"
+				xmlns:gco="http://www.isotc211.org/2005/gco"
+				xmlns:xlink="http://www.w3.org/1999/xlink"
+				xmlns:srv="http://www.isotc211.org/2005/srv"
+				xmlns:gml="http://www.opengis.net/gml/3.2"
+				xmlns:gsr="http://www.isotc211.org/2005/gsr"
+				xmlns:gss="http://www.isotc211.org/2005/gss"
+				xmlns:gts="http://www.isotc211.org/2005/gts"
+				xmlns:gmx="http://www.isotc211.org/2005/gmx"
+				xsi:schemaLocation="http://www.isotc211.org/2005/gmi http://www.ngdc.noaa.gov/metadata/published/xsd/schema.xsd">
+
+	<gmd:fileIdentifier>
+		<gco:CharacterString>### REPLACE THIS ###</gco:CharacterString>
+	</gmd:fileIdentifier>
+
+	<gmd:language>
+		<gco:CharacterString>eng; USA</gco:CharacterString>
+	</gmd:language>
+
+	<gmd:characterSet>
+		<gmd:MD_CharacterSetCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_CharacterSetCode" codeListValue="utf8">utf8</gmd:MD_CharacterSetCode>
+	</gmd:characterSet>
+
+
+	<gmd:hierarchyLevel>
+		<gmd:MD_ScopeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_ScopeCode" codeListValue="dataset">dataset</gmd:MD_ScopeCode>
+	</gmd:hierarchyLevel>
+
+
+	<gmd:contact xlink:title="IOOS Metdata Management">
+		<gmd:CI_ResponsibleParty>
+			<gmd:organisationName>
+				<gco:CharacterString>DOC/NOAA/NOS/IOOS</gco:CharacterString>
+			</gmd:organisationName>
+			<gmd:positionName>
+				<gco:CharacterString>IOOS metadata manager</gco:CharacterString>
+			</gmd:positionName>
+			<gmd:contactInfo>
+				<gmd:CI_Contact>
+					<gmd:onlineResource>
+						<gmd:CI_OnlineResource>
+							<gmd:linkage>
+								<gmd:URL>http://www.ioos.noaa.gov/</gmd:URL>
+							</gmd:linkage>
+						</gmd:CI_OnlineResource>
+					</gmd:onlineResource>
+				</gmd:CI_Contact>
+			</gmd:contactInfo>
+			<gmd:role>
+				<gmd:CI_RoleCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode" codeListValue="publisher">publisher</gmd:CI_RoleCode>
+			</gmd:role>
+		</gmd:CI_ResponsibleParty>
+	</gmd:contact>
+
+	<gmd:dateStamp>
+		<gco:Date>### REPLACE THIS ### 2015-11-01</gco:Date>
+	</gmd:dateStamp>
+
+	<gmd:metadataStandardName>
+		<gco:CharacterString>ISO 19115-2 Geographic Information - Metadata - Part 2: Extensions for Imagery and Gridded Data</gco:CharacterString>
+	</gmd:metadataStandardName>
+
+	<gmd:metadataStandardVersion>
+		<gco:CharacterString>ISO 19115-2:2009(E)</gco:CharacterString>
+	</gmd:metadataStandardVersion>
+
+
+
+	<gmd:identificationInfo>
+		<gmd:MD_DataIdentification>
+			<gmd:citation>
+				<gmd:CI_Citation>
+					<gmd:title>
+						<gco:CharacterString>### REPLACE THIS ###</gco:CharacterString>
+					</gmd:title>
+					<gmd:date>
+						<gmd:CI_Date>
+							<gmd:date>
+								<gco:Date>2007</gco:Date>
+							</gmd:date>
+							<gmd:dateType>
+								<gmd:CI_DateTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" codeListValue="publication">publication</gmd:CI_DateTypeCode>
+							</gmd:dateType>
+						</gmd:CI_Date>
+					</gmd:date>
+					<gmd:date>
+						<gmd:CI_Date>
+							<gmd:date>
+								<gco:Date>### REPLACE THIS ###</gco:Date>
+							</gmd:date>
+							<gmd:dateType>
+								<gmd:CI_DateTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" codeListValue="revision">revision</gmd:CI_DateTypeCode>
+							</gmd:dateType>
+						</gmd:CI_Date>
+					</gmd:date>
+
+					<gmd:citedResponsibleParty>
+						<gmd:CI_ResponsibleParty>
+							<gmd:organisationName>
+								<gco:CharacterString>### REPLACE THIS ###</gco:CharacterString>
+							</gmd:organisationName>
+							<gmd:role>
+								<gmd:CI_RoleCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode" codeListValue="custodian">custodian</gmd:CI_RoleCode>
+							</gmd:role>
+						</gmd:CI_ResponsibleParty>
+					</gmd:citedResponsibleParty>
+					<gmd:presentationForm>
+						<gmd:CI_PresentationFormCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_PresentationFormCode" codeListValue="mapDigital">mapDigital</gmd:CI_PresentationFormCode>
+					</gmd:presentationForm>
+				</gmd:CI_Citation>
+			</gmd:citation>
+
+			<gmd:abstract>
+				<gco:CharacterString>### REPLACE THIS ###</gco:CharacterString>
+			</gmd:abstract>
+
+			<gmd:purpose>
+				<gco:CharacterString>### REPLACE THIS ###</gco:CharacterString>
+			</gmd:purpose>
+
+			<gmd:status>
+				<gmd:MD_ProgressCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_ProgressCode" codeListValue="onGoing">onGoing</gmd:MD_ProgressCode>
+			</gmd:status>
+
+			<gmd:pointOfContact>
+				<gmd:CI_ResponsibleParty>
+					<gmd:organisationName>
+						<gco:CharacterString>### REPLACE THIS ###</gco:CharacterString>
+					</gmd:organisationName>
+					<gmd:contactInfo>
+						<gmd:CI_Contact>
+							<gmd:address>
+								<gmd:CI_Address>
+									<gmd:electronicMailAddress>
+										<gco:CharacterString>### REPLACE THIS ###</gco:CharacterString>
+									</gmd:electronicMailAddress>
+								</gmd:CI_Address>
+							</gmd:address>
+							<gmd:onlineResource>
+								<gmd:CI_OnlineResource>
+									<gmd:linkage>
+										<gmd:URL>### REPLACE THIS ###</gmd:URL>
+									</gmd:linkage>
+								</gmd:CI_OnlineResource>
+							</gmd:onlineResource>
+						</gmd:CI_Contact>
+					</gmd:contactInfo>
+					<gmd:role>
+						<gmd:CI_RoleCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode" codeListValue="pointOfContact">pointOfContact</gmd:CI_RoleCode>
+					</gmd:role>
+				</gmd:CI_ResponsibleParty>
+			</gmd:pointOfContact>
+
+			<gmd:resourceMaintenance>
+				<gmd:MD_MaintenanceInformation>
+					<gmd:maintenanceAndUpdateFrequency>
+						<gmd:MD_MaintenanceFrequencyCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_MaintenanceFrequencyCode" codeListValue="continual">continual</gmd:MD_MaintenanceFrequencyCode>
+					</gmd:maintenanceAndUpdateFrequency>
+				</gmd:MD_MaintenanceInformation>
+			</gmd:resourceMaintenance>
+			<gmd:graphicOverview>
+        <gmd:MD_BrowseGraphic>
+          <gmd:fileName>
+            <gco:CharacterString>### REPLACE THIS ###</gco:CharacterString>
+          </gmd:fileName>
+          <gmd:fileType>
+            <gco:CharacterString>PNG</gco:CharacterString>
+          </gmd:fileType>
+        </gmd:MD_BrowseGraphic>
+      </gmd:graphicOverview>
+
+			<gmd:descriptiveKeywords xlink:title="ISO Theme">
+				<gmd:MD_Keywords>
+					<!-- add keywords to template -->
+					<gmd:type>
+						<gmd:MD_KeywordTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_KeywordTypeCode" codeListValue="theme">theme</gmd:MD_KeywordTypeCode>
+					</gmd:type>
+				</gmd:MD_Keywords>
+			</gmd:descriptiveKeywords>
+
+			<gmd:descriptiveKeywords xlink:title="ISO Place">
+				<gmd:MD_Keywords>
+					<!-- add keywords to template -->
+					<gmd:type>
+						<gmd:MD_KeywordTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_KeywordTypeCode" codeListValue="place">place</gmd:MD_KeywordTypeCode>
+					</gmd:type>
+				</gmd:MD_Keywords>
+			</gmd:descriptiveKeywords>
+
+
+			<gmd:descriptiveKeywords xlink:title="ISO Temporal">
+				<gmd:MD_Keywords>
+					<!-- add keywords to template -->
+					<gmd:type>
+						<gmd:MD_KeywordTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_KeywordTypeCode" codeListValue="temporal">temporal</gmd:MD_KeywordTypeCode>
+					</gmd:type>
+
+				</gmd:MD_Keywords>
+			</gmd:descriptiveKeywords>
+
+			<gmd:descriptiveKeywords xlink:title="GCMD Place">
+        <gmd:MD_Keywords>
+          <gmd:type>
+            <gmd:MD_KeywordTypeCode
+                codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_KeywordTypeCode"
+                codeListValue="place">place</gmd:MD_KeywordTypeCode>
+          </gmd:type>
+          <gmd:thesaurusName>
+            <gmd:CI_Citation>
+                <gmd:title>
+                    <gco:CharacterString>NASA/GCMD Location Keywords</gco:CharacterString>
+                </gmd:title>
+                <gmd:date>
+                    <gmd:CI_Date>
+                        <gmd:date>
+                            <gco:Date>2016-05-11</gco:Date>
+                        </gmd:date>
+                        <gmd:dateType>
+                            <gmd:CI_DateTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" codeListValue="revision"/>
+                        </gmd:dateType>
+                    </gmd:CI_Date>
+                </gmd:date>
+            </gmd:CI_Citation>
+          </gmd:thesaurusName>
+        </gmd:MD_Keywords>
+      </gmd:descriptiveKeywords>
+
+			<gmd:resourceConstraints>
+				<gmd:MD_LegalConstraints>
+					<gmd:accessConstraints>
+						<gmd:MD_RestrictionCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_RestrictionCode" codeListValue="otherRestrictions">otherRestrictions</gmd:MD_RestrictionCode>
+					</gmd:accessConstraints>
+
+					<gmd:useConstraints>
+						<gmd:MD_RestrictionCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_RestrictionCode" codeListValue="otherRestrictions">otherRestrictions</gmd:MD_RestrictionCode>
+					</gmd:useConstraints>
+
+
+					<gmd:otherConstraints>
+						<gco:CharacterString>### REPLACE THIS ###</gco:CharacterString>
+					</gmd:otherConstraints>
+				</gmd:MD_LegalConstraints>
+			</gmd:resourceConstraints>
+
+
+
+			<gmd:language>
+				<gco:CharacterString>eng; USA</gco:CharacterString>
+			</gmd:language>
+			<gmd:topicCategory>
+				<gmd:MD_TopicCategoryCode>climatologyMeteorologyAtmosphere</gmd:MD_TopicCategoryCode>
+			</gmd:topicCategory>
+			<gmd:topicCategory>
+				<gmd:MD_TopicCategoryCode>environment</gmd:MD_TopicCategoryCode>
+			</gmd:topicCategory>
+			<gmd:topicCategory>
+				<gmd:MD_TopicCategoryCode>oceans</gmd:MD_TopicCategoryCode>
+			</gmd:topicCategory>
+
+
+			<gmd:extent>
+				<gmd:EX_Extent>
+					<gmd:geographicElement>
+						<gmd:EX_GeographicBoundingBox>
+							<gmd:extentTypeCode>
+								<gco:Boolean>### REPLACE THIS ###</gco:Boolean>
+							</gmd:extentTypeCode>
+							<gmd:westBoundLongitude>
+								<gco:Decimal>### REPLACE THIS ###</gco:Decimal>
+							</gmd:westBoundLongitude>
+							<gmd:eastBoundLongitude>
+								<gco:Decimal>### REPLACE THIS ###</gco:Decimal>
+							</gmd:eastBoundLongitude>
+							<gmd:southBoundLatitude>
+								<gco:Decimal>### REPLACE THIS ###</gco:Decimal>
+							</gmd:southBoundLatitude>
+							<gmd:northBoundLatitude>
+								<gco:Decimal>### REPLACE THIS ###</gco:Decimal>
+							</gmd:northBoundLatitude>
+						</gmd:EX_GeographicBoundingBox>
+					</gmd:geographicElement>
+					<gmd:temporalElement xlink:title="temporalExtent1">
+						<gmd:EX_TemporalExtent>
+							<gmd:extent>
+								<gml:TimePeriod gml:id="temporalExtent1">
+									<gml:description>real-time / near real-time.</gml:description>
+									<gml:beginPosition>2001-07-11</gml:beginPosition>
+									<gml:endPosition indeterminatePosition="now"/>
+									<gml:timeInterval></gml:timeInterval>
+								</gml:TimePeriod>
+							</gmd:extent>
+						</gmd:EX_TemporalExtent>
+					</gmd:temporalElement>
+
+
+				</gmd:EX_Extent>
+			</gmd:extent>
+
+		</gmd:MD_DataIdentification>
+	</gmd:identificationInfo>
+
+
+	<gmd:contentInfo xlink:title="IOOS Feature Catalogue">
+		<gmd:MD_FeatureCatalogueDescription>
+			<gmd:includedWithDataset>
+				<gco:Boolean>true</gco:Boolean>
+			</gmd:includedWithDataset>
+			<gmd:featureTypes>
+				<gco:LocalName codeSpace="Air_Temperature">Air Temperature</gco:LocalName>
+			</gmd:featureTypes>
+			<gmd:featureTypes>
+				<gco:LocalName codeSpace="Barometric_Pressure">Barometric Pressure</gco:LocalName>
+			</gmd:featureTypes>
+			<gmd:featureTypes>
+				<gco:LocalName codeSpace="Battery">Battery</gco:LocalName>
+			</gmd:featureTypes>
+			<gmd:featureTypes>
+				<gco:LocalName codeSpace="CO2">CO2</gco:LocalName>
+			</gmd:featureTypes>
+			<gmd:featureTypes>
+				<gco:LocalName codeSpace="Chlorophyll">Chlorophyll</gco:LocalName>
+			</gmd:featureTypes>
+			<gmd:featureTypes>
+				<gco:LocalName codeSpace="Conductivity">Conductivity</gco:LocalName>
+			</gmd:featureTypes>
+			<gmd:featureTypes>
+				<gco:LocalName codeSpace="Depth_to_Water_Level">Depth to Water Level</gco:LocalName>
+			</gmd:featureTypes>
+			<gmd:featureTypes>
+				<gco:LocalName codeSpace="Dew_Point">Dew Point</gco:LocalName>
+			</gmd:featureTypes>
+			<gmd:featureTypes>
+				<gco:LocalName codeSpace="Dissolved_Oxygen">Dissolved Oxygen</gco:LocalName>
+			</gmd:featureTypes>
+			<gmd:featureTypes>
+				<gco:LocalName codeSpace="Fuel_Moisture">Fuel Moisture</gco:LocalName>
+			</gmd:featureTypes>
+			<gmd:featureTypes>
+				<gco:LocalName codeSpace="Fuel_Temperature">Fuel Temperature</gco:LocalName>
+			</gmd:featureTypes>
+			<gmd:featureTypes>
+				<gco:LocalName codeSpace="Ground_Temperature">Ground Temperature</gco:LocalName>
+			</gmd:featureTypes>
+			<gmd:featureTypes>
+				<gco:LocalName codeSpace="Omega_Aragonite">Omega Aragonite</gco:LocalName>
+			</gmd:featureTypes>
+			<gmd:featureTypes>
+				<gco:LocalName codeSpace="Panel_Temperature">Panel Temperature</gco:LocalName>
+			</gmd:featureTypes>
+			<gmd:featureTypes>
+				<gco:LocalName codeSpace="Precipitation">Precipitation</gco:LocalName>
+			</gmd:featureTypes>
+			<gmd:featureTypes>
+				<gco:LocalName codeSpace="Real Dielectric Constant">Real Dielectrict Constant</gco:LocalName>
+			</gmd:featureTypes>
+			<gmd:featureTypes>
+				<gco:LocalName codeSpace="Relative_Humidity">Relative Humidity</gco:LocalName>
+			</gmd:featureTypes>
+			<gmd:featureTypes>
+				<gco:LocalName codeSpace="Salinity">Salinity</gco:LocalName>
+			</gmd:featureTypes>
+			<gmd:featureTypes>
+				<gco:LocalName codeSpace="Sea_Floor_Depth_Below_Sea_Surface">Sea Floor Depth Below Sea Surface</gco:LocalName>
+			</gmd:featureTypes>
+			<gmd:featureTypes>
+				<gco:LocalName codeSpace="Snow_Depth">Snow Depth</gco:LocalName>
+			</gmd:featureTypes>
+			<gmd:featureTypes>
+				<gco:LocalName codeSpace="Snow_Water_Equivalent">Snow Water Equivalent</gco:LocalName>
+			</gmd:featureTypes>
+			<gmd:featureTypes>
+				<gco:LocalName codeSpace="Soil_Mosture_Percent">Soil Mosture Percent</gco:LocalName>
+			</gmd:featureTypes>
+			<gmd:featureTypes>
+				<gco:LocalName codeSpace="Solar_Radiation">Solar Radiation</gco:LocalName>
+			</gmd:featureTypes>
+			<gmd:featureTypes>
+				<gco:LocalName codeSpace="Steam_Flow">Steam Flow</gco:LocalName>
+			</gmd:featureTypes>
+			<gmd:featureTypes>
+				<gco:LocalName codeSpace="Stream_Height">Stream Height</gco:LocalName>
+			</gmd:featureTypes>
+			<gmd:featureTypes>
+				<gco:LocalName codeSpace="Tide_Predictions">Tide Predictions</gco:LocalName>
+			</gmd:featureTypes>
+			<gmd:featureTypes>
+				<gco:LocalName codeSpace="Total_Alkalinity">Total Alkalinity</gco:LocalName>
+			</gmd:featureTypes>
+			<gmd:featureTypes>
+				<gco:LocalName codeSpace="Turbidity">Turbidity</gco:LocalName>
+			</gmd:featureTypes>
+			<gmd:featureTypes>
+				<gco:LocalName codeSpace="Water_Level">Water Level</gco:LocalName>
+			</gmd:featureTypes>
+			<gmd:featureTypes>
+				<gco:LocalName codeSpace="Water_Temperature">Water Temperature</gco:LocalName>
+			</gmd:featureTypes>
+			<gmd:featureTypes>
+				<gco:LocalName codeSpace="Wave_Height_and_Direction">Wave Height and Direction</gco:LocalName>
+			</gmd:featureTypes>
+			<gmd:featureTypes>
+				<gco:LocalName codeSpace="WebCam">WebCam</gco:LocalName>
+			</gmd:featureTypes>
+			<gmd:featureTypes>
+				<gco:LocalName codeSpace="Wind_Speed_and_Direction">Wind Speed and Direction</gco:LocalName>
+			</gmd:featureTypes>
+			<gmd:featureTypes>
+				<gco:LocalName codeSpace="pCO2">pCO2</gco:LocalName>
+			</gmd:featureTypes>
+			<gmd:featureTypes>
+				<gco:LocalName codeSpace="pH">pH</gco:LocalName>
+			</gmd:featureTypes>
+
+			<gmd:featureCatalogueCitation gco:nilReason="unknown"/>
+
+
+		</gmd:MD_FeatureCatalogueDescription>
+	</gmd:contentInfo>
+
+
+	<gmd:distributionInfo>
+		<gmd:MD_Distribution>
+			<gmd:distributionFormat xlink:title="Web Mapping Service for vector and gridded">
+				<gmd:MD_Format>
+					<gmd:name>
+						<gco:CharacterString>WMS</gco:CharacterString>
+					</gmd:name>
+					<gmd:version gco:nilReason="unknown"/>
+				</gmd:MD_Format>
+			</gmd:distributionFormat>
+			<gmd:distributionFormat xlink:title="Web Feature Service for vector">
+				<gmd:MD_Format>
+					<gmd:name>
+						<gco:CharacterString>WFS</gco:CharacterString>
+					</gmd:name>
+					<gmd:version gco:nilReason="unknown"/>
+				</gmd:MD_Format>
+			</gmd:distributionFormat>
+			<gmd:distributionFormat xlink:title="Sensor Observation Service for sensor data">
+				<gmd:MD_Format>
+					<gmd:name>
+						<gco:CharacterString>SOS</gco:CharacterString>
+					</gmd:name>
+					<gmd:version gco:nilReason="unknown"/>
+				</gmd:MD_Format>
+			</gmd:distributionFormat>
+			<gmd:distributionFormat xlink:title="Open-source Project for a Network Data Access Protocol for gridded">
+				<gmd:MD_Format>
+					<gmd:name>
+						<gco:CharacterString>OPeNDAP</gco:CharacterString>
+					</gmd:name>
+					<gmd:version gco:nilReason="unknown"/>
+				</gmd:MD_Format>
+			</gmd:distributionFormat>
+			<gmd:distributionFormat xlink:title="Web Coverage Service for gridded">
+				<gmd:MD_Format>
+					<gmd:name>
+						<gco:CharacterString>WCS</gco:CharacterString>
+					</gmd:name>
+					<gmd:version gco:nilReason="unknown"/>
+				</gmd:MD_Format>
+			</gmd:distributionFormat>
+			<gmd:distributionFormat xlink:title="Network Common Data Form download for gridded">
+				<gmd:MD_Format>
+					<gmd:name>
+						<gco:CharacterString>netCDF</gco:CharacterString>
+					</gmd:name>
+					<gmd:version gco:nilReason="unknown"/>
+				</gmd:MD_Format>
+			</gmd:distributionFormat>
+			<gmd:distributor>
+				<gmd:MD_Distributor>
+					<gmd:distributorContact>
+						<gmd:CI_ResponsibleParty>
+							<gmd:organisationName>
+								<gco:CharacterString>### REPLACE THIS ###</gco:CharacterString>
+							</gmd:organisationName>
+							<gmd:contactInfo>
+								<gmd:CI_Contact>
+									<gmd:address>
+										<gmd:CI_Address>
+											<gmd:electronicMailAddress>
+												<gco:CharacterString>### REPLACE THIS ###</gco:CharacterString>
+											</gmd:electronicMailAddress>
+										</gmd:CI_Address>
+									</gmd:address>
+									<gmd:onlineResource>
+										<gmd:CI_OnlineResource>
+											<gmd:linkage>
+												<gmd:URL>### REPLACE THIS ###</gmd:URL>
+											</gmd:linkage>
+										</gmd:CI_OnlineResource>
+									</gmd:onlineResource>
+								</gmd:CI_Contact>
+							</gmd:contactInfo>
+							<gmd:role>
+								<gmd:CI_RoleCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode" codeListValue="pointOfContact">pointOfContact</gmd:CI_RoleCode>
+							</gmd:role>
+						</gmd:CI_ResponsibleParty>
+					</gmd:distributorContact>
+				</gmd:MD_Distributor>
+			</gmd:distributor>
+			<gmd:transferOptions xlink:title="### REPLACE THIS ###">
+				<gmd:MD_DigitalTransferOptions>
+					<gmd:onLine>
+						<gmd:CI_OnlineResource>
+							<gmd:linkage>
+								<gmd:URL>### REPLACE THIS ###</gmd:URL>
+							</gmd:linkage>
+							<gmd:name>
+								<gco:CharacterString>### REPLACE THIS ###</gco:CharacterString>
+							</gmd:name>
+							<gmd:description>
+								<gco:CharacterString>### REPLACE THIS ###</gco:CharacterString>
+							</gmd:description>
+						</gmd:CI_OnlineResource>
+					</gmd:onLine>
+				</gmd:MD_DigitalTransferOptions>
+			</gmd:transferOptions>
+		</gmd:MD_Distribution>
+	</gmd:distributionInfo>
+
+
+
+
+	<gmd:metadataMaintenance>
+		<gmd:MD_MaintenanceInformation>
+			<gmd:maintenanceAndUpdateFrequency>
+				<gmd:MD_MaintenanceFrequencyCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_MaintenanceFrequencyCode" codeListValue="asNeeded">asNeeded</gmd:MD_MaintenanceFrequencyCode>
+			</gmd:maintenanceAndUpdateFrequency>
+			<gmd:contact>
+				<gmd:CI_ResponsibleParty>
+					<gmd:organisationName>
+						<gco:CharacterString>Department of Commerce (DOC), National Oceanic and Atmospheric Administration (NOAA), National Ocean Service (NOS)</gco:CharacterString>
+					</gmd:organisationName>
+					<gmd:contactInfo/>
+					<gmd:role>
+						<gmd:CI_RoleCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode" codeListValue="custodian">custodian</gmd:CI_RoleCode>
+					</gmd:role>
+				</gmd:CI_ResponsibleParty>
+			</gmd:contact>
+		</gmd:MD_MaintenanceInformation>
+	</gmd:metadataMaintenance>
+
+
+</gmi:MI_Metadata>
