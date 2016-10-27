@@ -19,12 +19,14 @@ def main():
     }
     parser = argparse.ArgumentParser(**kwargs)
 
-    help = 'URL of SOS service to parse and convert.'
-    parser.add_argument('-s', '--service', type=str, required=True, help=help)
+    parser.add_argument('-s', '--service', type=str, required=True,
+                        help='URL of SOS service to parse and convert.')
 
-    help = 'Print folders and services as encountered.'
+    parser.add_argument('-d', '--active_sensor_days', type=int, required=False, default=30,
+                        help='Number of days from present to use to filter SOS sensors for active/inactive designation.  Inactive are excluded from processing.')
+
     parser.add_argument('-v', '--verbose', action='store_true',
-                        help=help)
+                        help='Print folders and services as encountered.')
 
     """
     help = 'Resolve xlink:href attributes.'
@@ -44,9 +46,10 @@ def main():
 
     obj = Sensorml2Iso(
         service=args.service,
+        active_sensor_days=args.active_sensor_days,
         verbose=args.verbose)
     # obj.run()
-    if args.verbose is not None:
+    if args.verbose is True:
         print(obj)
 
 # run main (hack for absence of setuptools install):
