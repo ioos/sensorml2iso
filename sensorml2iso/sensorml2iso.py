@@ -51,8 +51,8 @@ class Sensorml2Iso:
         # self.load_validation_schema()
 
     def run(self):
-
-
+        return
+        
     def run_test(self):
         print("Service: {service}, verbose: {verbose}, o: {o}".format(service=self.service, verbose=self.verbose, o=self.output_directory))
         active_date = datetime.today() - timedelta(days=self.active_sensor_days)
