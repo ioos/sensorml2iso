@@ -1,7 +1,23 @@
 from datetime import datetime, timedelta
 # import urllib3
+from urllib import urlencode
 from urlparse import urlparse
+from collections import OrderedDict
+from lxml import etree
 
+import numpy as np
+import pandas as pd
+from shapely.geometry import Point
+import geopandas as gpd
+
+from owslib.sos import SensorObservationService
+from owslib.swe.sensor.sml import SensorML, Contact, Documentation
+from owslib.util import testXMLValue, testXMLAttribute, nspath_eval
+from owslib.namespaces import Namespaces
+
+from pyoos.collectors.ioos.swe_sos import IoosSweSos
+from pyoos.parsers.ioos.describe_sensor import IoosDescribeSensor
+from pyoos.parsers.ioos.one.describe_sensor import ont
 
 # from jinja2 import Environment, PackageLoader
 # env = Environment(loader=PackageLoader('yourapplication', 'templates'))
@@ -33,6 +49,9 @@ class Sensorml2Iso:
         self.run_test()
         # self.read_config_file()
         # self.load_validation_schema()
+
+    def run(self):
+        return
 
     def run_test(self):
         print("Service: {service}, verbose: {verbose}, o: {o}".format(service=self.service, verbose=self.verbose, o=self.output_directory))
