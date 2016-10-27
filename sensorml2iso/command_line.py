@@ -48,7 +48,8 @@ def main():
         service=args.service,
         active_sensor_days=args.active_sensor_days,
         verbose=args.verbose)
-    # obj.run()
+    obj.run()
+    
     if args.verbose is True:
         print(obj)
 

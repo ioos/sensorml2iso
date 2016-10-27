@@ -1,6 +1,9 @@
 from datetime import datetime, timedelta
 # import urllib3
+from urllib import urlencode
 from urlparse import urlparse
+from collections import OrderedDict
+from lxml import etree
 
 
 # from jinja2 import Environment, PackageLoader
@@ -33,6 +36,9 @@ class Sensorml2Iso:
         self.run_test()
         # self.read_config_file()
         # self.load_validation_schema()
+
+    def run(self):
+
 
     def run_test(self):
         print("Service: {service}, verbose: {verbose}, o: {o}".format(service=self.service, verbose=self.verbose, o=self.output_directory))
