@@ -26,7 +26,7 @@ kwargs = {
         'numpy>=1.11.2',
         'pandas>=0.19.0',
         'pyoos>=0.8.2',
-        'shapely>=1.5.17'
+        'shapely>=1.5.16'
 
 
         #'urllib3>=1.18'
