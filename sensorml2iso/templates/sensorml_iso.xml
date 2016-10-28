@@ -14,7 +14,7 @@
 				xsi:schemaLocation="http://www.isotc211.org/2005/gmi http://www.ngdc.noaa.gov/metadata/published/xsd/schema.xsd">
 
 	<gmd:fileIdentifier>
-		<gco:CharacterString>### REPLACE THIS ###</gco:CharacterString>
+		<gco:CharacterString>{{ identifier }}</gco:CharacterString>
 	</gmd:fileIdentifier>
 
 	<gmd:language>

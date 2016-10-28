@@ -19,8 +19,7 @@ from pyoos.collectors.ioos.swe_sos import IoosSweSos
 from pyoos.parsers.ioos.describe_sensor import IoosDescribeSensor
 from pyoos.parsers.ioos.one.describe_sensor import ont
 
-# from jinja2 import Environment, PackageLoader
-# env = Environment(loader=PackageLoader('yourapplication', 'templates'))
+from jinja2 import Environment, PackageLoader
 
 
 class Sensorml2Iso:
@@ -36,6 +35,8 @@ class Sensorml2Iso:
     """
 
     def __init__(self, service=None, active_station_days=None, stations=None, verbose=False):
+        """
+        """
 
         self.service = service
 
@@ -51,9 +52,12 @@ class Sensorml2Iso:
         # self.load_validation_schema()
 
     def run(self):
+        """
+        """
         self.namespaces = self.get_namespaces()
         print("Stations: {stations}".format(stations=self.stations))
 
+        # obtain the stations DataFrame:
         stations_df = self.get_stations_df(self.service, self.stations)
 
         # Assign EPSG:4326 CRS, retrieved from epsg.io
@@ -67,7 +71,7 @@ class Sensorml2Iso:
                  AUTHORITY["EPSG","4326"]]'
         '''
         geometry = [Point(xy) for xy in zip(stations_df.lon, stations_df.lat)]
-        stations_gdf = gpd.GeoDataFrame(stations_df, geometry=geometry, crs=crs)
+        self.stations_gdf = gpd.GeoDataFrame(stations_df, geometry=geometry, crs=crs)
 
         # determine active/inactive:
         station_active_date = datetime.today() - timedelta(days=self.active_station_days)
@@ -75,19 +79,31 @@ class Sensorml2Iso:
         total_cnt = len(stations_df)
         print("'Active' stations: %d / Total stations: %d" % (active_cnt, total_cnt))
 
-        stations_df[stations_df.ending > station_active_date.isoformat()]
-        print(stations_df[stations_df.ending > station_active_date.isoformat()].to_csv())
+        # only relevant as an output in jupyter, no operation on stations_df:
+        # stations_df[stations_df.ending > station_active_date.isoformat()]
+        print("len(stations_df): {len:2.0f}".format(len=len(stations_df)))
 
+        filtered_stations_df = stations_df.loc[stations_df.ending > station_active_date.isoformat()]
+        print("len(filtered_stations_df): {len:2.0f}".format(len=len(filtered_stations_df)))
+
+        print(stations_df[stations_df.ending > station_active_date.isoformat()].to_csv())
+        # self.stations_df = stations_df
+
+        self.generate_iso(stations_df)
         return
 
     # These functions are all from OWSLib, with minor adaptations
     def get_namespaces(self):
+        """
+        """
         n = Namespaces()
         namespaces = n.get_namespaces(["sml", "gml", "xlink", "swe"])
         namespaces["ism"] = "urn:us:gov:ic:ism:v2"
         return namespaces
 
     def nsp(self, path):
+        """
+        """
         return nspath_eval(path, self.namespaces)
 
     def get_stations_df(self, sos_url, station_urns_sel=None):
@@ -120,8 +136,8 @@ class Sensorml2Iso:
             # debug MW:
             # text_content approach doesn't work:
             # print(sml._root.text_content)
-            if station_idx == 0:
-                print(etree.tostring(sml._root))
+            # if station_idx == 0:
+            #    print(etree.tostring(sml._root))
 
             ds = IoosDescribeSensor(sml._root)
             # debug MW:
@@ -197,8 +213,22 @@ class Sensorml2Iso:
 
         return stations_df
 
+    def generate_iso(self, df):
+        """
+        """
+        vars = {}
+        # get the first station:
+        station = df.iloc[0]
+        vars['identifier'] = station.station_urn
+
+        env = Environment(loader=PackageLoader('sensorml2iso', 'templates'))
+        # template = env.get_template('senorml_iso.xml')
+        template = env.get_template('sensorml_iso_min.xml')
+        print template.render(vars)
+
     def run_test(self):
         print("Service: {service}, verbose: {verbose}, o: {o}".format(service=self.service, verbose=self.verbose, o=self.output_directory))
         active_date = datetime.today() - timedelta(days=self.active_station_days)
 
-        print("Date for determining active/inactive stations in SOS service: {active_date}".format(active_date=active_date.strftime("%Y-%m-%d")))
+        # print("Date for determining active/inactive stations in SOS service: {active_date}".format(active_date=active_date.strftime("%Y-%m-%d")))
+        print("Date for determining active/inactive stations in SOS service: {active_date:%Y-%m-%d}".format(active_date=active_date))
