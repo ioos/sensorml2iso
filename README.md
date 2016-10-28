@@ -9,6 +9,9 @@ python setup.py install
 sensorml2iso -s http://data.nanoos.org/52nsos/sos/kvp -d 14 --stations=urn:ioos:station:nanoos:apl_nemo,urn:ioos:station:nanoos:apl_npb1ptwells
 ```
 Parameters:
+
 -s | --service : URL of SOS GetCapabilities
+
 -d | --active_station_days : number of days beyond which to consider station 'inactive' and exclude
+
 --stations : comma-separated list of station URNs to filter on
