@@ -31,33 +31,69 @@
 	</gmd:hierarchyLevel>
 
 
-	<gmd:contact xlink:title="IOOS Metdata Management">
+	<gmd:contact xlink:title="{{ contacts_publisher.organization }}">
 		<gmd:CI_ResponsibleParty>
 			<gmd:organisationName>
-				<gco:CharacterString>DOC/NOAA/NOS/IOOS</gco:CharacterString>
+				<gco:CharacterString>{{ contacts_publisher.organization }}</gco:CharacterString>
 			</gmd:organisationName>
 			<gmd:positionName>
-				<gco:CharacterString>IOOS metadata manager</gco:CharacterString>
+				<gco:CharacterString>{{ contacts_publisher.organization }}</gco:CharacterString>
 			</gmd:positionName>
 			<gmd:contactInfo>
 				<gmd:CI_Contact>
+					<gmd:address>
+						<gmd:CI_Address>
+							{% if contacts_publisher.region is not none %}
+							<gmd:administrativeArea>
+								<gco:CharacterString>{{ contacts_publisher.region }}</gco:CharacterString>
+							</gmd:administrativeArea>
+							{% endif %}
+							{% if contacts_publisher.city is not none %}
+							<gmd:city>
+								<gco:CharacterString>{{ contacts_publisher.city }}</gco:CharacterString>
+							</gmd:city>
+							{% endif %}
+							{% if contacts_publisher.country is not none %}
+							<gmd:country>
+								<gco:CharacterString>{{ contacts_publisher.country }}</gco:CharacterString>
+							</gmd:country>
+							{% endif %}
+							{% if contacts_publisher.address is not none %}
+							<gmd:deliveryPoint>
+								<gco:CharacterString>{{ contacts_publisher.address }}</gco:CharacterString>
+							</gmd:deliveryPoint>
+							{% endif %}
+							{% if contacts_publisher.postcode is not none %}
+							<gmd:postalCode>
+								<gco:CharacterString>{{ contacts_publisher.postcode }}</gco:CharacterString>
+							</gmd:postalCode>
+							{% endif %}
+							{% if contacts_publisher.email is not none %}
+							<gmd:electronicMailAddress>
+								<gco:CharacterString>{{ contacts_publisher.email }}</gco:CharacterString>
+							</gmd:electronicMailAddress>
+							{% endif %}
+						</gmd:CI_Address>
+					</gmd:address>
+					{% if contacts_publisher.url is not none %}
 					<gmd:onlineResource>
 						<gmd:CI_OnlineResource>
 							<gmd:linkage>
-								<gmd:URL>http://www.ioos.noaa.gov/</gmd:URL>
+								<gmd:URL>{{ contacts_publisher.url }}</gmd:URL>
 							</gmd:linkage>
 						</gmd:CI_OnlineResource>
 					</gmd:onlineResource>
+					{% endif %}
 				</gmd:CI_Contact>
 			</gmd:contactInfo>
 			<gmd:role>
-				<gmd:CI_RoleCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode" codeListValue="publisher">publisher</gmd:CI_RoleCode>
+				<gmd:CI_RoleCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode" codeListValue="{{ contacts_publisher.role.split('/')[-1] | capitalize }}">{{ contacts_publisher.role.split('/')[-1] | capitalize }}</gmd:CI_RoleCode>
 			</gmd:role>
 		</gmd:CI_ResponsibleParty>
 	</gmd:contact>
 
 	<gmd:dateStamp>
-		<gco:Date>### REPLACE THIS ### 2015-11-01</gco:Date>
+		<gco:Date>{{ metadataDate }}</gco:Date>
 	</gmd:dateStamp>
 
 	<gmd:metadataStandardName>
@@ -69,7 +105,7 @@
 	</gmd:metadataStandardVersion>
 
 
-
+{#
 	<gmd:identificationInfo>
 		<gmd:MD_DataIdentification>
 			<gmd:citation>
@@ -545,6 +581,6 @@
 			</gmd:contact>
 		</gmd:MD_MaintenanceInformation>
 	</gmd:metadataMaintenance>
-
+#}
 
 </gmi:MI_Metadata>

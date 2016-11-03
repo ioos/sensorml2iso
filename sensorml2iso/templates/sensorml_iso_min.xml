@@ -17,5 +17,9 @@
 		<gco:CharacterString>{{ identifier }}</gco:CharacterString>
 	</gmd:fileIdentifier>
 
+{# some template snippets #}
+
+{% if  is not none %}
+{% endif %}
 
 </gmi:MI_Metadata>

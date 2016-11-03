@@ -3,9 +3,9 @@ from datetime import datetime, timedelta
 from urllib import urlencode
 from urlparse import urlparse
 from collections import OrderedDict
-from lxml import etree
+# from lxml import etree
 
-import numpy as np
+# import numpy as np
 import pandas as pd
 from shapely.geometry import Point
 import geopandas as gpd
@@ -30,6 +30,8 @@ class Sensorml2Iso:
         An IOOS DMAC-compliant SOS service to parse for active sensors to generate metadata for.
     active_station_days : int
         Number of days before present to designate stations as 'active' for inclusion/exclusion purposes.
+    stations : str
+        List of station URNs to filter by for processing
     more : str
         More class attributes...
     """
@@ -48,8 +50,8 @@ class Sensorml2Iso:
         self.output_directory = self.service_url.netloc
 
         self.run_test()
-        # self.read_config_file()
-        # self.load_validation_schema()
+        if self.verbose:
+            self.log = open('sensorml2iso.log', mode='wt')
 
     def run(self):
         """
@@ -86,7 +88,9 @@ class Sensorml2Iso:
         filtered_stations_df = stations_df.loc[stations_df.ending > station_active_date.isoformat()]
         print("len(filtered_stations_df): {len:2.0f}".format(len=len(filtered_stations_df)))
 
-        print(stations_df[stations_df.ending > station_active_date.isoformat()].to_csv())
+        # print(stations_df[stations_df.ending > station_active_date.isoformat()].to_csv().encode('utf-8'))
+        if self.verbose:
+            self.log.write(stations_df[stations_df.ending > station_active_date.isoformat()].to_csv(encoding='utf-8'))
         # self.stations_df = stations_df
 
         self.generate_iso(stations_df)
@@ -186,12 +190,13 @@ class Sensorml2Iso:
             station['sponsor'] = ds.get_ioos_def('sponsor', 'classifier', ont)
             station['webpage_url'] = webpage_url
 
+            station['contacts_dct'] = contacts_dct
+
             station['operatorSector'] = ds.get_ioos_def('operatorSector', 'classifier', ont)
             station['operator_org'] = contacts_dct['operator'].organization
             station['operator_country'] = contacts_dct['operator'].country
             station['operator_url'] = contacts_dct['operator'].url
-            # pull out email address(es) too?
-            # station_dct['operator_email'] = contacts_dct['operator'].electronicMailAddress
+            station['operator_email'] = contacts_dct['operator'].email
 
             station['publisher'] = ds.get_ioos_def('publisher', 'classifier', ont)
             station['publisher_org'] = contacts_dct['publisher'].organization
@@ -217,13 +222,17 @@ class Sensorml2Iso:
         """
         """
         vars = {}
+        # populate some general elements for the template:
+        vars['metadataDate'] = "{metadata_date:%Y-%m-%d}".format(metadata_date=datetime.today())
+
         # get the first station:
         station = df.iloc[0]
         vars['identifier'] = station.station_urn
+        vars['contacts_publisher'] = station['contacts_dct']['publisher']
 
-        env = Environment(loader=PackageLoader('sensorml2iso', 'templates'))
-        # template = env.get_template('senorml_iso.xml')
-        template = env.get_template('sensorml_iso_min.xml')
+        env = Environment(loader=PackageLoader('sensorml2iso', 'templates'), trim_blocks=True, lstrip_blocks=True)
+        template = env.get_template('sensorml_iso.xml')
+        # template = env.get_template('sensorml_iso_min.xml')
         print template.render(vars)
 
     def run_test(self):
