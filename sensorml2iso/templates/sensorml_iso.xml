@@ -1,3 +1,6 @@
+{# import macros #}
+{% from 'macros.xml' import CI_ResponsibleParty, CI_OnlineResource %}
+
 <?xml version='1.0' encoding='utf-8'?>
 <gmi:MI_Metadata
 				xmlns:gmi="http://www.isotc211.org/2005/gmi"
@@ -31,69 +34,12 @@
 	</gmd:hierarchyLevel>
 
 
-	<gmd:contact xlink:title="{{ contacts_publisher.organization }}">
-		<gmd:CI_ResponsibleParty>
-			<gmd:organisationName>
-				<gco:CharacterString>{{ contacts_publisher.organization }}</gco:CharacterString>
-			</gmd:organisationName>
-			<gmd:positionName>
-				<gco:CharacterString>{{ contacts_publisher.organization }}</gco:CharacterString>
-			</gmd:positionName>
-			<gmd:contactInfo>
-				<gmd:CI_Contact>
-					<gmd:address>
-						<gmd:CI_Address>
-							{% if contacts_publisher.region is not none %}
-							<gmd:administrativeArea>
-								<gco:CharacterString>{{ contacts_publisher.region }}</gco:CharacterString>
-							</gmd:administrativeArea>
-							{% endif %}
-							{% if contacts_publisher.city is not none %}
-							<gmd:city>
-								<gco:CharacterString>{{ contacts_publisher.city }}</gco:CharacterString>
-							</gmd:city>
-							{% endif %}
-							{% if contacts_publisher.country is not none %}
-							<gmd:country>
-								<gco:CharacterString>{{ contacts_publisher.country }}</gco:CharacterString>
-							</gmd:country>
-							{% endif %}
-							{% if contacts_publisher.address is not none %}
-							<gmd:deliveryPoint>
-								<gco:CharacterString>{{ contacts_publisher.address }}</gco:CharacterString>
-							</gmd:deliveryPoint>
-							{% endif %}
-							{% if contacts_publisher.postcode is not none %}
-							<gmd:postalCode>
-								<gco:CharacterString>{{ contacts_publisher.postcode }}</gco:CharacterString>
-							</gmd:postalCode>
-							{% endif %}
-							{% if contacts_publisher.email is not none %}
-							<gmd:electronicMailAddress>
-								<gco:CharacterString>{{ contacts_publisher.email }}</gco:CharacterString>
-							</gmd:electronicMailAddress>
-							{% endif %}
-						</gmd:CI_Address>
-					</gmd:address>
-					{% if contacts_publisher.url is not none %}
-					<gmd:onlineResource>
-						<gmd:CI_OnlineResource>
-							<gmd:linkage>
-								<gmd:URL>{{ contacts_publisher.url }}</gmd:URL>
-							</gmd:linkage>
-						</gmd:CI_OnlineResource>
-					</gmd:onlineResource>
-					{% endif %}
-				</gmd:CI_Contact>
-			</gmd:contactInfo>
-			<gmd:role>
-				<gmd:CI_RoleCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode" codeListValue="{{ contacts_publisher.role.split('/')[-1] | capitalize }}">{{ contacts_publisher.role.split('/')[-1] | capitalize }}</gmd:CI_RoleCode>
-			</gmd:role>
-		</gmd:CI_ResponsibleParty>
+	<gmd:contact xlink:title="{{ contacts_dct.publisher.organization }}">
+		{{ CI_ResponsibleParty(contacts_dct.publisher) }}
 	</gmd:contact>
 
 	<gmd:dateStamp>
-		<gco:Date>{{ metadataDate }}</gco:Date>
+		<gco:Date>{{ metadataDate.strftime('%Y-%m-%d') }}</gco:Date>
 	</gmd:dateStamp>
 
 	<gmd:metadataStandardName>
@@ -105,90 +51,60 @@
 	</gmd:metadataStandardVersion>
 
 
-{#
 	<gmd:identificationInfo>
 		<gmd:MD_DataIdentification>
 			<gmd:citation>
 				<gmd:CI_Citation>
 					<gmd:title>
-						<gco:CharacterString>### REPLACE THIS ###</gco:CharacterString>
+						<gco:CharacterString>{{ longName }}</gco:CharacterString>
 					</gmd:title>
 					<gmd:date>
 						<gmd:CI_Date>
 							<gmd:date>
-								<gco:Date>2007</gco:Date>
+								<gco:Date>{{ metadataDate.strftime('%Y') }}</gco:Date>
 							</gmd:date>
 							<gmd:dateType>
 								<gmd:CI_DateTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" codeListValue="publication">publication</gmd:CI_DateTypeCode>
 							</gmd:dateType>
 						</gmd:CI_Date>
 					</gmd:date>
-					<gmd:date>
-						<gmd:CI_Date>
-							<gmd:date>
-								<gco:Date>### REPLACE THIS ###</gco:Date>
-							</gmd:date>
-							<gmd:dateType>
-								<gmd:CI_DateTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" codeListValue="revision">revision</gmd:CI_DateTypeCode>
-							</gmd:dateType>
-						</gmd:CI_Date>
-					</gmd:date>
 
-					<gmd:citedResponsibleParty>
-						<gmd:CI_ResponsibleParty>
-							<gmd:organisationName>
-								<gco:CharacterString>### REPLACE THIS ###</gco:CharacterString>
-							</gmd:organisationName>
-							<gmd:role>
-								<gmd:CI_RoleCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode" codeListValue="custodian">custodian</gmd:CI_RoleCode>
-							</gmd:role>
-						</gmd:CI_ResponsibleParty>
+
+					<gmd:citedResponsibleParty xlink:title="contacts_dct.publisher.organization">
+						{{ CI_ResponsibleParty(contacts_dct.publisher) }}
 					</gmd:citedResponsibleParty>
 					<gmd:presentationForm>
-						<gmd:CI_PresentationFormCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_PresentationFormCode" codeListValue="mapDigital">mapDigital</gmd:CI_PresentationFormCode>
+						<gmd:CI_PresentationFormCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_PresentationFormCode" codeListValue="modelDigital">modelDigital</gmd:CI_PresentationFormCode>
 					</gmd:presentationForm>
 				</gmd:CI_Citation>
 			</gmd:citation>
 
 			<gmd:abstract>
-				<gco:CharacterString>### REPLACE THIS ###</gco:CharacterString>
+				<gco:CharacterString>
+					{% if abstract is not none %}
+{{ abstract }}
+					{% endif %}
+
+					{% if variables is not none %}
+This station provides the following variables: {% for variable in variables %}{{ variable | replace("_", " ") | capitalize}}{% if not loop.last %}, {% endif %}{% endfor %}
+					{% endif %}
+{#
+					{% if variables is not none %}
+This station provides the following variables: {{ ", ".join(variables) | replace("_", " ") | capitalize }}
+
+This station provides the following variables: {{ variables | replace("_", " ") | capitalize | join(", ")}}
+					{% endif %}
+#}
+				</gco:CharacterString>
 			</gmd:abstract>
 
-			<gmd:purpose>
-				<gco:CharacterString>### REPLACE THIS ###</gco:CharacterString>
-			</gmd:purpose>
 
 			<gmd:status>
 				<gmd:MD_ProgressCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_ProgressCode" codeListValue="onGoing">onGoing</gmd:MD_ProgressCode>
 			</gmd:status>
 
-			<gmd:pointOfContact>
-				<gmd:CI_ResponsibleParty>
-					<gmd:organisationName>
-						<gco:CharacterString>### REPLACE THIS ###</gco:CharacterString>
-					</gmd:organisationName>
-					<gmd:contactInfo>
-						<gmd:CI_Contact>
-							<gmd:address>
-								<gmd:CI_Address>
-									<gmd:electronicMailAddress>
-										<gco:CharacterString>### REPLACE THIS ###</gco:CharacterString>
-									</gmd:electronicMailAddress>
-								</gmd:CI_Address>
-							</gmd:address>
-							<gmd:onlineResource>
-								<gmd:CI_OnlineResource>
-									<gmd:linkage>
-										<gmd:URL>### REPLACE THIS ###</gmd:URL>
-									</gmd:linkage>
-								</gmd:CI_OnlineResource>
-							</gmd:onlineResource>
-						</gmd:CI_Contact>
-					</gmd:contactInfo>
-					<gmd:role>
-						<gmd:CI_RoleCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode" codeListValue="pointOfContact">pointOfContact</gmd:CI_RoleCode>
-					</gmd:role>
-				</gmd:CI_ResponsibleParty>
+			<gmd:pointOfContact xlink:title="contacts_dct.publisher.organization">
+				{{ CI_ResponsibleParty(contacts_dct.publisher, 'pointOfContact') }}
 			</gmd:pointOfContact>
 
 			<gmd:resourceMaintenance>
@@ -198,20 +114,20 @@
 					</gmd:maintenanceAndUpdateFrequency>
 				</gmd:MD_MaintenanceInformation>
 			</gmd:resourceMaintenance>
-			<gmd:graphicOverview>
-        <gmd:MD_BrowseGraphic>
-          <gmd:fileName>
-            <gco:CharacterString>### REPLACE THIS ###</gco:CharacterString>
-          </gmd:fileName>
-          <gmd:fileType>
-            <gco:CharacterString>PNG</gco:CharacterString>
-          </gmd:fileType>
-        </gmd:MD_BrowseGraphic>
-      </gmd:graphicOverview>
 
 			<gmd:descriptiveKeywords xlink:title="ISO Theme">
 				<gmd:MD_Keywords>
 					<!-- add keywords to template -->
+					{% for keyword in keywords %}
+					<gmd:keyword>
+						<gco:CharacterString>{{ keyword }}</gco:CharacterString>
+					</gmd:keyword>
+					{% endfor %}
+					{% for variable in variables %}
+					<gmd:keyword>
+						<gco:CharacterString>{{ variable }}</gco:CharacterString>
+					</gmd:keyword>
+					{% endfor %}
 					<gmd:type>
 						<gmd:MD_KeywordTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_KeywordTypeCode" codeListValue="theme">theme</gmd:MD_KeywordTypeCode>
 					</gmd:type>
@@ -238,50 +154,6 @@
 				</gmd:MD_Keywords>
 			</gmd:descriptiveKeywords>
 
-			<gmd:descriptiveKeywords xlink:title="GCMD Place">
-        <gmd:MD_Keywords>
-          <gmd:type>
-            <gmd:MD_KeywordTypeCode
-                codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_KeywordTypeCode"
-                codeListValue="place">place</gmd:MD_KeywordTypeCode>
-          </gmd:type>
-          <gmd:thesaurusName>
-            <gmd:CI_Citation>
-                <gmd:title>
-                    <gco:CharacterString>NASA/GCMD Location Keywords</gco:CharacterString>
-                </gmd:title>
-                <gmd:date>
-                    <gmd:CI_Date>
-                        <gmd:date>
-                            <gco:Date>2016-05-11</gco:Date>
-                        </gmd:date>
-                        <gmd:dateType>
-                            <gmd:CI_DateTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" codeListValue="revision"/>
-                        </gmd:dateType>
-                    </gmd:CI_Date>
-                </gmd:date>
-            </gmd:CI_Citation>
-          </gmd:thesaurusName>
-        </gmd:MD_Keywords>
-      </gmd:descriptiveKeywords>
-
-			<gmd:resourceConstraints>
-				<gmd:MD_LegalConstraints>
-					<gmd:accessConstraints>
-						<gmd:MD_RestrictionCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_RestrictionCode" codeListValue="otherRestrictions">otherRestrictions</gmd:MD_RestrictionCode>
-					</gmd:accessConstraints>
-
-					<gmd:useConstraints>
-						<gmd:MD_RestrictionCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_RestrictionCode" codeListValue="otherRestrictions">otherRestrictions</gmd:MD_RestrictionCode>
-					</gmd:useConstraints>
-
-
-					<gmd:otherConstraints>
-						<gco:CharacterString>### REPLACE THIS ###</gco:CharacterString>
-					</gmd:otherConstraints>
-				</gmd:MD_LegalConstraints>
-			</gmd:resourceConstraints>
-
 
 
 			<gmd:language>
@@ -303,159 +175,146 @@
 					<gmd:geographicElement>
 						<gmd:EX_GeographicBoundingBox>
 							<gmd:extentTypeCode>
-								<gco:Boolean>### REPLACE THIS ###</gco:Boolean>
+								<gco:Boolean>1</gco:Boolean>
 							</gmd:extentTypeCode>
 							<gmd:westBoundLongitude>
-								<gco:Decimal>### REPLACE THIS ###</gco:Decimal>
+								<gco:Decimal>{{ lon }}</gco:Decimal>
 							</gmd:westBoundLongitude>
 							<gmd:eastBoundLongitude>
-								<gco:Decimal>### REPLACE THIS ###</gco:Decimal>
+								<gco:Decimal>{{ lon }}</gco:Decimal>
 							</gmd:eastBoundLongitude>
 							<gmd:southBoundLatitude>
-								<gco:Decimal>### REPLACE THIS ###</gco:Decimal>
+								<gco:Decimal>{{ lat }}</gco:Decimal>
 							</gmd:southBoundLatitude>
 							<gmd:northBoundLatitude>
-								<gco:Decimal>### REPLACE THIS ###</gco:Decimal>
+								<gco:Decimal>{{ lat }}</gco:Decimal>
 							</gmd:northBoundLatitude>
 						</gmd:EX_GeographicBoundingBox>
 					</gmd:geographicElement>
-					<gmd:temporalElement xlink:title="temporalExtent1">
-						<gmd:EX_TemporalExtent>
+					<gmd:temporalElement>
+						<gmd:EX_TemporalExtent gml:id="boundingTemporalExtent">
 							<gmd:extent>
-								<gml:TimePeriod gml:id="temporalExtent1">
-									<gml:description>real-time / near real-time.</gml:description>
-									<gml:beginPosition>2001-07-11</gml:beginPosition>
-									<gml:endPosition indeterminatePosition="now"/>
-									<gml:timeInterval></gml:timeInterval>
+								<gml:TimePeriod>
+									<gml:description gco:nilReason="missing" />
+									<gml:beginPosition>{{ starting.isoformat() }}</gml:beginPosition>
+									<gml:endPosition>{{ ending.isoformat() }}</gml:endPosition>
+									<gml:timeInterval gco:nilReason="missing" />
 								</gml:TimePeriod>
 							</gmd:extent>
 						</gmd:EX_TemporalExtent>
 					</gmd:temporalElement>
-
-
 				</gmd:EX_Extent>
 			</gmd:extent>
-
 		</gmd:MD_DataIdentification>
 	</gmd:identificationInfo>
 
+<gmd:identificationInfo>
+		 <srv:SV_ServiceIdentification id="OGC-SOS">
+				<gmd:citation>
+					 <gmd:CI_Citation>
+							<gmd:title>
+								 <gco:CharacterString>{{ title }}</gco:CharacterString>
+							</gmd:title>
+							<gmd:date>
+								 <gmd:CI_Date>
+										<gmd:date>
+											 <gco:DateTime>{{ beginServiceDate.strftime('%Y-%m-%d') }}</gco:DateTime>
+										</gmd:date>
+										<gmd:dateType>
+											 <gmd:CI_DateTypeCode codeList="http://www.ngdc.noaa.gov/metadata/published/xsd/schema/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode"
+																						codeListValue="creation">creation</gmd:CI_DateTypeCode>
+										</gmd:dateType>
+								 </gmd:CI_Date>
+							</gmd:date>
+							<gmd:citedResponsibleParty>
+								{{ CI_ResponsibleParty(contacts_dct.publisher) }}
+							</gmd:citedResponsibleParty>
+					 </gmd:CI_Citation>
+				</gmd:citation>
+				<gmd:abstract>
+					<gco:CharacterString>
+					{% if abstract is not none %}
+{{ abstract }}
+					{% endif %}
 
-	<gmd:contentInfo xlink:title="IOOS Feature Catalogue">
-		<gmd:MD_FeatureCatalogueDescription>
-			<gmd:includedWithDataset>
-				<gco:Boolean>true</gco:Boolean>
-			</gmd:includedWithDataset>
-			<gmd:featureTypes>
-				<gco:LocalName codeSpace="Air_Temperature">Air Temperature</gco:LocalName>
-			</gmd:featureTypes>
-			<gmd:featureTypes>
-				<gco:LocalName codeSpace="Barometric_Pressure">Barometric Pressure</gco:LocalName>
-			</gmd:featureTypes>
-			<gmd:featureTypes>
-				<gco:LocalName codeSpace="Battery">Battery</gco:LocalName>
-			</gmd:featureTypes>
-			<gmd:featureTypes>
-				<gco:LocalName codeSpace="CO2">CO2</gco:LocalName>
-			</gmd:featureTypes>
-			<gmd:featureTypes>
-				<gco:LocalName codeSpace="Chlorophyll">Chlorophyll</gco:LocalName>
-			</gmd:featureTypes>
-			<gmd:featureTypes>
-				<gco:LocalName codeSpace="Conductivity">Conductivity</gco:LocalName>
-			</gmd:featureTypes>
-			<gmd:featureTypes>
-				<gco:LocalName codeSpace="Depth_to_Water_Level">Depth to Water Level</gco:LocalName>
-			</gmd:featureTypes>
-			<gmd:featureTypes>
-				<gco:LocalName codeSpace="Dew_Point">Dew Point</gco:LocalName>
-			</gmd:featureTypes>
-			<gmd:featureTypes>
-				<gco:LocalName codeSpace="Dissolved_Oxygen">Dissolved Oxygen</gco:LocalName>
-			</gmd:featureTypes>
-			<gmd:featureTypes>
-				<gco:LocalName codeSpace="Fuel_Moisture">Fuel Moisture</gco:LocalName>
-			</gmd:featureTypes>
-			<gmd:featureTypes>
-				<gco:LocalName codeSpace="Fuel_Temperature">Fuel Temperature</gco:LocalName>
-			</gmd:featureTypes>
-			<gmd:featureTypes>
-				<gco:LocalName codeSpace="Ground_Temperature">Ground Temperature</gco:LocalName>
-			</gmd:featureTypes>
-			<gmd:featureTypes>
-				<gco:LocalName codeSpace="Omega_Aragonite">Omega Aragonite</gco:LocalName>
-			</gmd:featureTypes>
-			<gmd:featureTypes>
-				<gco:LocalName codeSpace="Panel_Temperature">Panel Temperature</gco:LocalName>
-			</gmd:featureTypes>
-			<gmd:featureTypes>
-				<gco:LocalName codeSpace="Precipitation">Precipitation</gco:LocalName>
-			</gmd:featureTypes>
-			<gmd:featureTypes>
-				<gco:LocalName codeSpace="Real Dielectric Constant">Real Dielectrict Constant</gco:LocalName>
-			</gmd:featureTypes>
-			<gmd:featureTypes>
-				<gco:LocalName codeSpace="Relative_Humidity">Relative Humidity</gco:LocalName>
-			</gmd:featureTypes>
-			<gmd:featureTypes>
-				<gco:LocalName codeSpace="Salinity">Salinity</gco:LocalName>
-			</gmd:featureTypes>
-			<gmd:featureTypes>
-				<gco:LocalName codeSpace="Sea_Floor_Depth_Below_Sea_Surface">Sea Floor Depth Below Sea Surface</gco:LocalName>
-			</gmd:featureTypes>
-			<gmd:featureTypes>
-				<gco:LocalName codeSpace="Snow_Depth">Snow Depth</gco:LocalName>
-			</gmd:featureTypes>
-			<gmd:featureTypes>
-				<gco:LocalName codeSpace="Snow_Water_Equivalent">Snow Water Equivalent</gco:LocalName>
-			</gmd:featureTypes>
-			<gmd:featureTypes>
-				<gco:LocalName codeSpace="Soil_Mosture_Percent">Soil Mosture Percent</gco:LocalName>
-			</gmd:featureTypes>
-			<gmd:featureTypes>
-				<gco:LocalName codeSpace="Solar_Radiation">Solar Radiation</gco:LocalName>
-			</gmd:featureTypes>
-			<gmd:featureTypes>
-				<gco:LocalName codeSpace="Steam_Flow">Steam Flow</gco:LocalName>
-			</gmd:featureTypes>
-			<gmd:featureTypes>
-				<gco:LocalName codeSpace="Stream_Height">Stream Height</gco:LocalName>
-			</gmd:featureTypes>
-			<gmd:featureTypes>
-				<gco:LocalName codeSpace="Tide_Predictions">Tide Predictions</gco:LocalName>
-			</gmd:featureTypes>
-			<gmd:featureTypes>
-				<gco:LocalName codeSpace="Total_Alkalinity">Total Alkalinity</gco:LocalName>
-			</gmd:featureTypes>
-			<gmd:featureTypes>
-				<gco:LocalName codeSpace="Turbidity">Turbidity</gco:LocalName>
-			</gmd:featureTypes>
-			<gmd:featureTypes>
-				<gco:LocalName codeSpace="Water_Level">Water Level</gco:LocalName>
-			</gmd:featureTypes>
-			<gmd:featureTypes>
-				<gco:LocalName codeSpace="Water_Temperature">Water Temperature</gco:LocalName>
-			</gmd:featureTypes>
-			<gmd:featureTypes>
-				<gco:LocalName codeSpace="Wave_Height_and_Direction">Wave Height and Direction</gco:LocalName>
-			</gmd:featureTypes>
-			<gmd:featureTypes>
-				<gco:LocalName codeSpace="WebCam">WebCam</gco:LocalName>
-			</gmd:featureTypes>
-			<gmd:featureTypes>
-				<gco:LocalName codeSpace="Wind_Speed_and_Direction">Wind Speed and Direction</gco:LocalName>
-			</gmd:featureTypes>
-			<gmd:featureTypes>
-				<gco:LocalName codeSpace="pCO2">pCO2</gco:LocalName>
-			</gmd:featureTypes>
-			<gmd:featureTypes>
-				<gco:LocalName codeSpace="pH">pH</gco:LocalName>
-			</gmd:featureTypes>
-
-			<gmd:featureCatalogueCitation gco:nilReason="unknown"/>
-
-
-		</gmd:MD_FeatureCatalogueDescription>
-	</gmd:contentInfo>
+					{% if variables is not none %}
+This station provides the following variables: {% for variable in variables %}{{ variable | replace("_", " ") | capitalize}}{% if not loop.last %}, {% endif %}{% endfor %}
+					{% endif %}
+					<gco:CharacterString>
+				</gmd:abstract>
+				<srv:serviceType>
+					 <gco:LocalName>OGC:SOS</gco:LocalName>
+				</srv:serviceType>
+				<srv:extent>
+					<gmd:EX_Extent>
+						<gmd:geographicElement>
+						 <gmd:EX_GeographicBoundingBox>
+							 <gmd:extentTypeCode>
+								 <gco:Boolean>1</gco:Boolean>
+							 </gmd:extentTypeCode>
+							 <gmd:westBoundLongitude>
+								 <gco:Decimal>{{ lon }}</gco:Decimal>
+							 </gmd:westBoundLongitude>
+							 <gmd:eastBoundLongitude>
+								 <gco:Decimal>{{ lon }}</gco:Decimal>
+							 </gmd:eastBoundLongitude>
+							 <gmd:southBoundLatitude>
+								 <gco:Decimal>{{ lat }}</gco:Decimal>
+							 </gmd:southBoundLatitude>
+							 <gmd:northBoundLatitude>
+								 <gco:Decimal>{{ lat }}</gco:Decimal>
+							 </gmd:northBoundLatitude>
+						 </gmd:EX_GeographicBoundingBox>
+						</gmd:geographicElement>
+						<gmd:temporalElement>
+						 <gmd:EX_TemporalExtent>
+							 <gmd:extent>
+								 <gml:TimePeriod>
+									 <gml:description gco:nilReason="missing" />
+									 <gml:beginPosition>{{ starting.isoformat() }}</gml:beginPosition>
+									 <gml:endPosition>{{ ending.isoformat() }}</gml:endPosition>
+									 <gml:timeInterval gco:nilReason="missing" />
+								 </gml:TimePeriod>
+							 </gmd:extent>
+						 </gmd:EX_TemporalExtent>
+						</gmd:temporalElement>
+					</gmd:EX_Extent>
+				</srv:extent>
+				<srv:couplingType>
+					 <srv:SV_CouplingType codeList="http://www.tc211.org/ISO19139/resources/codeList.xml#SV_CouplingType"
+																codeListValue="tight">tight</srv:SV_CouplingType>
+				</srv:couplingType>
+				<srv:containsOperations>
+					 <srv:SV_OperationMetadata>
+							<srv:operationName>
+								 <gco:CharacterString>SOS GetCapabilities</gco:CharacterString>
+							</srv:operationName>
+							<srv:DCP gco:nilReason="unknown"/>
+							<srv:connectPoint>
+								 <gmd:CI_OnlineResource>
+										<gmd:linkage>
+											 <gmd:URL>{{ sos_url }}</gmd:URL>
+										</gmd:linkage>
+										<gmd:protocol>
+											 <gco:CharacterString>OGC:SOS</gco:CharacterString>
+										</gmd:protocol>
+										<gmd:name>
+											 <gco:CharacterString>{{ title }}</gco:CharacterString>
+										</gmd:name>
+										<gmd:description>
+											 <gco:CharacterString>Open Geospatial Consortium Sensor Observation Service (SOS)</gco:CharacterString>
+										</gmd:description>
+										<gmd:function>
+											 <gmd:CI_OnLineFunctionCode codeList="http://www.ngdc.noaa.gov/metadata/published/xsd/schema/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode"
+																									codeListValue="download">download</gmd:CI_OnLineFunctionCode>
+										</gmd:function>
+								 </gmd:CI_OnlineResource>
+							</srv:connectPoint>
+					 </srv:SV_OperationMetadata>
+				</srv:containsOperations>
+				<srv:operatesOn xlink:href="#DataIdentification"/>
+		 </srv:SV_ServiceIdentification>
+	</gmd:identificationInfo>
 
 
 	<gmd:distributionInfo>
@@ -510,58 +369,22 @@
 			</gmd:distributionFormat>
 			<gmd:distributor>
 				<gmd:MD_Distributor>
-					<gmd:distributorContact>
-						<gmd:CI_ResponsibleParty>
-							<gmd:organisationName>
-								<gco:CharacterString>### REPLACE THIS ###</gco:CharacterString>
-							</gmd:organisationName>
-							<gmd:contactInfo>
-								<gmd:CI_Contact>
-									<gmd:address>
-										<gmd:CI_Address>
-											<gmd:electronicMailAddress>
-												<gco:CharacterString>### REPLACE THIS ###</gco:CharacterString>
-											</gmd:electronicMailAddress>
-										</gmd:CI_Address>
-									</gmd:address>
-									<gmd:onlineResource>
-										<gmd:CI_OnlineResource>
-											<gmd:linkage>
-												<gmd:URL>### REPLACE THIS ###</gmd:URL>
-											</gmd:linkage>
-										</gmd:CI_OnlineResource>
-									</gmd:onlineResource>
-								</gmd:CI_Contact>
-							</gmd:contactInfo>
-							<gmd:role>
-								<gmd:CI_RoleCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode" codeListValue="pointOfContact">pointOfContact</gmd:CI_RoleCode>
-							</gmd:role>
-						</gmd:CI_ResponsibleParty>
+					<gmd:distributorContact xlink:title="contacts_dct.publisher.organization">
+							{{ CI_ResponsibleParty(contacts_dct.publisher, 'distributor') }}
 					</gmd:distributorContact>
 				</gmd:MD_Distributor>
 			</gmd:distributor>
-			<gmd:transferOptions xlink:title="### REPLACE THIS ###">
+			{% for id, document in documents_dct.iteritems() %}
+			<gmd:transferOptions xlink:title="{{ shortName }}">
 				<gmd:MD_DigitalTransferOptions>
 					<gmd:onLine>
-						<gmd:CI_OnlineResource>
-							<gmd:linkage>
-								<gmd:URL>### REPLACE THIS ###</gmd:URL>
-							</gmd:linkage>
-							<gmd:name>
-								<gco:CharacterString>### REPLACE THIS ###</gco:CharacterString>
-							</gmd:name>
-							<gmd:description>
-								<gco:CharacterString>### REPLACE THIS ###</gco:CharacterString>
-							</gmd:description>
-						</gmd:CI_OnlineResource>
+						{{ CI_OnlineResource(document) }}
 					</gmd:onLine>
 				</gmd:MD_DigitalTransferOptions>
 			</gmd:transferOptions>
+			{% endfor %}
 		</gmd:MD_Distribution>
 	</gmd:distributionInfo>
-
-
-
 
 	<gmd:metadataMaintenance>
 		<gmd:MD_MaintenanceInformation>
@@ -569,18 +392,9 @@
 				<gmd:MD_MaintenanceFrequencyCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_MaintenanceFrequencyCode" codeListValue="asNeeded">asNeeded</gmd:MD_MaintenanceFrequencyCode>
 			</gmd:maintenanceAndUpdateFrequency>
 			<gmd:contact>
-				<gmd:CI_ResponsibleParty>
-					<gmd:organisationName>
-						<gco:CharacterString>Department of Commerce (DOC), National Oceanic and Atmospheric Administration (NOAA), National Ocean Service (NOS)</gco:CharacterString>
-					</gmd:organisationName>
-					<gmd:contactInfo/>
-					<gmd:role>
-						<gmd:CI_RoleCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode" codeListValue="custodian">custodian</gmd:CI_RoleCode>
-					</gmd:role>
-				</gmd:CI_ResponsibleParty>
+				{{ CI_ResponsibleParty(contacts_dct.publisher, 'custodian') }}
 			</gmd:contact>
 		</gmd:MD_MaintenanceInformation>
 	</gmd:metadataMaintenance>
-#}
 
 </gmi:MI_Metadata>

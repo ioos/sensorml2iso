@@ -1,0 +1,89 @@
+{% macro CI_ResponsibleParty(contact, role=None) %}
+<gmd:CI_ResponsibleParty>
+	<gmd:organisationName>
+		<gco:CharacterString>{{ contact.organization }}</gco:CharacterString>
+	</gmd:organisationName>
+	<gmd:positionName>
+		<gco:CharacterString>{{ contact.organization }}</gco:CharacterString>
+	</gmd:positionName>
+	<gmd:contactInfo>
+		<gmd:CI_Contact>
+			<gmd:address>
+				<gmd:CI_Address>
+					{% if contact.region is not none %}
+					<gmd:administrativeArea>
+						<gco:CharacterString>{{ contact.region }}</gco:CharacterString>
+					</gmd:administrativeArea>
+					{% endif %}
+					{% if contact.city is not none %}
+					<gmd:city>
+						<gco:CharacterString>{{ contact.city }}</gco:CharacterString>
+					</gmd:city>
+					{% endif %}
+					{% if contact.country is not none %}
+					<gmd:country>
+						<gco:CharacterString>{{ contact.country }}</gco:CharacterString>
+					</gmd:country>
+					{% endif %}
+					{% if contact.address is not none %}
+					<gmd:deliveryPoint>
+						<gco:CharacterString>{{ contact.address }}</gco:CharacterString>
+					</gmd:deliveryPoint>
+					{% endif %}
+					{% if contact.postcode is not none %}
+					<gmd:postalCode>
+						<gco:CharacterString>{{ contact.postcode }}</gco:CharacterString>
+					</gmd:postalCode>
+					{% endif %}
+					{% if contact.email is not none %}
+					<gmd:electronicMailAddress>
+						<gco:CharacterString>{{ contact.email }}</gco:CharacterString>
+					</gmd:electronicMailAddress>
+					{% endif %}
+				</gmd:CI_Address>
+			</gmd:address>
+			{% if contact.url is not none %}
+			<gmd:onlineResource>
+				<gmd:CI_OnlineResource>
+					<gmd:linkage>
+						<gmd:URL>{{ contact.url }}</gmd:URL>
+					</gmd:linkage>
+				</gmd:CI_OnlineResource>
+			</gmd:onlineResource>
+			{% endif %}
+		</gmd:CI_Contact>
+	</gmd:contactInfo>
+	<gmd:role>
+		{% if role is not none %}
+		<gmd:CI_RoleCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode" codeListValue="{{ role.split('/')[-1] }}">{{ role.split('/')[-1] }}</gmd:CI_RoleCode>
+		{% else %}
+		<gmd:CI_RoleCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode" codeListValue="{{ contact.role.split('/')[-1] }}">{{ contact.role.split('/')[-1] }}</gmd:CI_RoleCode>
+		{% endif %}
+	</gmd:role>
+</gmd:CI_ResponsibleParty>
+{% endmacro %}
+
+{% macro CI_OnlineResource(document) %}
+	<gmd:CI_OnlineResource>
+		<gmd:linkage>
+			<gmd:URL>{{ document.documents[0].url }}</gmd:URL>
+		</gmd:linkage>
+		<gmd:function>
+			<gmd:CI_OnLineFunctionCode codeList="http://www.ngdc.noaa.gov/metadata/published/xsd/schema/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode"
+				codeListValue="information">information</gmd:CI_OnLineFunctionCode>
+		</gmd:function>
+		<gmd:protocol>
+			<gco:CharacterString>WWW:LINK</gco:CharacterString>
+		</gmd:protocol>
+		{% if document.documents[0].id is not none %}
+		<gmd:name>
+			<gco:CharacterString>{{ document.documents[0].id }}</gco:CharacterString>
+		</gmd:name>
+		{% endif %}
+		{% if document.documents[0].description is not none %}
+		<gmd:description>
+			<gco:CharacterString>{{ document.documents[0].description }}</gco:CharacterString>
+		</gmd:description>
+		{% endif %}
+	</gmd:CI_OnlineResource>
+{% endmacro %}

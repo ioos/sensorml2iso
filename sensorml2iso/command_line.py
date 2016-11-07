@@ -41,22 +41,11 @@ def main():
     parser.add_argument('--stations', type=str,
                         help='Comma-separated list of station URNs to filter by. Eg. \'--stations=urn:ioos:station:nanoos:apl_nemo,urn:ioos:station:nanoos:apl_npb1ptwells\'.')
 
+    parser.add_argument('--getobs_req_hours', type=int, required=False, default=5,
+                        help='Number of hours from last valid station observation time to use in GetObservation request example URLs')
+
     parser.add_argument('-v', '--verbose', action='store_true',
                         help='Verbose debugging mode.')
-
-    """
-    help = 'Resolve xlink:href attributes.'
-    parser.add_argument('-r', '--resolve', action='store_true',
-                        help=help)
-
-    help = 'Skip querying a remote (AGS) service endpoint for additional \ metadata. Assume all metadata in config file or \ template.'
-    parser.add_argument('--no-server-query', action='store_true',
-                        help=help)
-
-    parser.add_argument('--config-file', type=str, default='config.yaml')
-    parser.add_argument('--template', type=str, default='template.xml')
-    parser.add_argument('--template-category', type=str, default='nowcoast')
-    """
 
     args = parser.parse_args()
 
@@ -80,6 +69,7 @@ def main():
         service=args.service,
         active_station_days=args.active_station_days,
         stations=stations,
+        getobs_req_hours=args.getobs_req_hours,
         verbose=args.verbose)
     obj.run()
 
