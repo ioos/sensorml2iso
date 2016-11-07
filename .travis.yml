@@ -35,4 +35,4 @@ install:
 
 
 script:
-  - flake8 --ignore=E501 --statistics sensorml2iso
+  - flake8 --ignore=E501,F401,F841 --statistics sensorml2iso
