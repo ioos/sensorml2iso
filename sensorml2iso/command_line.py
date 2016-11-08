@@ -42,7 +42,12 @@ def main():
                         help='Comma-separated list of station URNs to filter by. Eg. \'--stations=urn:ioos:station:nanoos:apl_nemo,urn:ioos:station:nanoos:apl_npb1ptwells\'.')
 
     parser.add_argument('--getobs_req_hours', type=int, required=False, default=5,
-                        help='Number of hours from last valid station observation time to use in GetObservation request example URLs')
+                        help='Number of hours from last valid station observation time to use in GetObservation request example URLs.')
+
+    parser.add_argument('--output_dir', type=str,
+                        help='Specify an output directory (relative to current) to write ISO 19115-2 XML files to.  If omitted \
+                        the default output directory will a subdirectory using the domain name of the SOS service URL passed \
+                        (eg. sos.gliders.ioos.us).')
 
     parser.add_argument('-v', '--verbose', action='store_true',
                         help='Verbose debugging mode.')
@@ -65,11 +70,15 @@ def main():
     if service_url.params or service_url.query:
         sys.exit("Error: '--service' parameter should not contain query parameters ('{query}'). Please include only the GetCapabilities root URL.  Value passed: {param}".format(query=service_url.query, param=args.service))
 
+    if args.output_dir is not None and os.path.isabs(args.output_dir):
+        sys.exit("Error: '--output_dir' parameter value must not be an absolute path name, only relative path accepted.  Value passed: {param}".format(param=args.output_dir))
+
     obj = Sensorml2Iso(
         service=args.service,
         active_station_days=args.active_station_days,
         stations=stations,
         getobs_req_hours=args.getobs_req_hours,
+        output_dir=args.output_dir,
         verbose=args.verbose)
     obj.run()
 

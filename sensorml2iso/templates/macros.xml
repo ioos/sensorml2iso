@@ -68,10 +68,6 @@
 		<gmd:linkage>
 			<gmd:URL>{{ document.documents[0].url }}</gmd:URL>
 		</gmd:linkage>
-		<gmd:function>
-			<gmd:CI_OnLineFunctionCode codeList="http://www.ngdc.noaa.gov/metadata/published/xsd/schema/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode"
-				codeListValue="information">information</gmd:CI_OnLineFunctionCode>
-		</gmd:function>
 		<gmd:protocol>
 			<gco:CharacterString>WWW:LINK</gco:CharacterString>
 		</gmd:protocol>
@@ -85,5 +81,9 @@
 			<gco:CharacterString>{{ document.documents[0].description }}</gco:CharacterString>
 		</gmd:description>
 		{% endif %}
+		<gmd:function>
+			<gmd:CI_OnLineFunctionCode codeList="http://www.ngdc.noaa.gov/metadata/published/xsd/schema/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode"
+				codeListValue="information">information</gmd:CI_OnLineFunctionCode>
+		</gmd:function>
 	</gmd:CI_OnlineResource>
 {% endmacro %}

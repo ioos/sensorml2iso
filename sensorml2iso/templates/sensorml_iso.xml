@@ -1,6 +1,5 @@
 {# import macros #}
 {% from 'macros.xml' import CI_ResponsibleParty, CI_OnlineResource %}
-
 <?xml version='1.0' encoding='utf-8'?>
 <gmi:MI_Metadata
 				xmlns:gmi="http://www.isotc211.org/2005/gmi"
@@ -17,40 +16,29 @@
 				xsi:schemaLocation="http://www.isotc211.org/2005/gmi http://www.ngdc.noaa.gov/metadata/published/xsd/schema.xsd">
 
 	<gmd:fileIdentifier>
-		<gco:CharacterString>{{ identifier }}</gco:CharacterString>
+		<gco:CharacterString>{{ serverName }}-{{ identifier.replace(":", "_") }}</gco:CharacterString>
 	</gmd:fileIdentifier>
-
 	<gmd:language>
 		<gco:CharacterString>eng; USA</gco:CharacterString>
 	</gmd:language>
-
 	<gmd:characterSet>
 		<gmd:MD_CharacterSetCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_CharacterSetCode" codeListValue="utf8">utf8</gmd:MD_CharacterSetCode>
 	</gmd:characterSet>
-
-
 	<gmd:hierarchyLevel>
 		<gmd:MD_ScopeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_ScopeCode" codeListValue="dataset">dataset</gmd:MD_ScopeCode>
 	</gmd:hierarchyLevel>
-
-
 	<gmd:contact xlink:title="{{ contacts_dct.publisher.organization }}">
 		{{ CI_ResponsibleParty(contacts_dct.publisher) }}
 	</gmd:contact>
-
 	<gmd:dateStamp>
 		<gco:Date>{{ metadataDate.strftime('%Y-%m-%d') }}</gco:Date>
 	</gmd:dateStamp>
-
 	<gmd:metadataStandardName>
 		<gco:CharacterString>ISO 19115-2 Geographic Information - Metadata - Part 2: Extensions for Imagery and Gridded Data</gco:CharacterString>
 	</gmd:metadataStandardName>
-
 	<gmd:metadataStandardVersion>
 		<gco:CharacterString>ISO 19115-2:2009(E)</gco:CharacterString>
 	</gmd:metadataStandardVersion>
-
-
 	<gmd:identificationInfo>
 		<gmd:MD_DataIdentification>
 			<gmd:citation>
@@ -68,8 +56,6 @@
 							</gmd:dateType>
 						</gmd:CI_Date>
 					</gmd:date>
-
-
 					<gmd:citedResponsibleParty xlink:title="contacts_dct.publisher.organization">
 						{{ CI_ResponsibleParty(contacts_dct.publisher) }}
 					</gmd:citedResponsibleParty>
@@ -78,7 +64,6 @@
 					</gmd:presentationForm>
 				</gmd:CI_Citation>
 			</gmd:citation>
-
 			<gmd:abstract>
 				<gco:CharacterString>
 					{% if abstract is not none %}
@@ -97,16 +82,12 @@ This station provides the following variables: {{ variables | replace("_", " ") 
 #}
 				</gco:CharacterString>
 			</gmd:abstract>
-
-
 			<gmd:status>
 				<gmd:MD_ProgressCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_ProgressCode" codeListValue="onGoing">onGoing</gmd:MD_ProgressCode>
 			</gmd:status>
-
 			<gmd:pointOfContact xlink:title="contacts_dct.publisher.organization">
 				{{ CI_ResponsibleParty(contacts_dct.publisher, 'pointOfContact') }}
 			</gmd:pointOfContact>
-
 			<gmd:resourceMaintenance>
 				<gmd:MD_MaintenanceInformation>
 					<gmd:maintenanceAndUpdateFrequency>
@@ -114,7 +95,6 @@ This station provides the following variables: {{ variables | replace("_", " ") 
 					</gmd:maintenanceAndUpdateFrequency>
 				</gmd:MD_MaintenanceInformation>
 			</gmd:resourceMaintenance>
-
 			<gmd:descriptiveKeywords xlink:title="ISO Theme">
 				<gmd:MD_Keywords>
 					<!-- add keywords to template -->
@@ -133,29 +113,6 @@ This station provides the following variables: {{ variables | replace("_", " ") 
 					</gmd:type>
 				</gmd:MD_Keywords>
 			</gmd:descriptiveKeywords>
-
-			<gmd:descriptiveKeywords xlink:title="ISO Place">
-				<gmd:MD_Keywords>
-					<!-- add keywords to template -->
-					<gmd:type>
-						<gmd:MD_KeywordTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_KeywordTypeCode" codeListValue="place">place</gmd:MD_KeywordTypeCode>
-					</gmd:type>
-				</gmd:MD_Keywords>
-			</gmd:descriptiveKeywords>
-
-
-			<gmd:descriptiveKeywords xlink:title="ISO Temporal">
-				<gmd:MD_Keywords>
-					<!-- add keywords to template -->
-					<gmd:type>
-						<gmd:MD_KeywordTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_KeywordTypeCode" codeListValue="temporal">temporal</gmd:MD_KeywordTypeCode>
-					</gmd:type>
-
-				</gmd:MD_Keywords>
-			</gmd:descriptiveKeywords>
-
-
-
 			<gmd:language>
 				<gco:CharacterString>eng; USA</gco:CharacterString>
 			</gmd:language>
@@ -168,8 +125,6 @@ This station provides the following variables: {{ variables | replace("_", " ") 
 			<gmd:topicCategory>
 				<gmd:MD_TopicCategoryCode>oceans</gmd:MD_TopicCategoryCode>
 			</gmd:topicCategory>
-
-
 			<gmd:extent>
 				<gmd:EX_Extent>
 					<gmd:geographicElement>
@@ -192,13 +147,12 @@ This station provides the following variables: {{ variables | replace("_", " ") 
 						</gmd:EX_GeographicBoundingBox>
 					</gmd:geographicElement>
 					<gmd:temporalElement>
-						<gmd:EX_TemporalExtent gml:id="boundingTemporalExtent">
+						<gmd:EX_TemporalExtent>
 							<gmd:extent>
-								<gml:TimePeriod>
-									<gml:description gco:nilReason="missing" />
+								<gml:TimePeriod gml:id="timeperiod-dataidentification-{{ station }}">
+									<gml:description />
 									<gml:beginPosition>{{ starting.isoformat() }}</gml:beginPosition>
 									<gml:endPosition>{{ ending.isoformat() }}</gml:endPosition>
-									<gml:timeInterval gco:nilReason="missing" />
 								</gml:TimePeriod>
 							</gmd:extent>
 						</gmd:EX_TemporalExtent>
@@ -218,7 +172,7 @@ This station provides the following variables: {{ variables | replace("_", " ") 
 							<gmd:date>
 								 <gmd:CI_Date>
 										<gmd:date>
-											 <gco:DateTime>{{ beginServiceDate.strftime('%Y-%m-%d') }}</gco:DateTime>
+											 <gco:DateTime>{{ beginServiceDate.strftime('%Y-%m-%dT%H:%M:%S') }}</gco:DateTime>
 										</gmd:date>
 										<gmd:dateType>
 											 <gmd:CI_DateTypeCode codeList="http://www.ngdc.noaa.gov/metadata/published/xsd/schema/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode"
@@ -240,7 +194,7 @@ This station provides the following variables: {{ variables | replace("_", " ") 
 					{% if variables is not none %}
 This station provides the following variables: {% for variable in variables %}{{ variable | replace("_", " ") | capitalize}}{% if not loop.last %}, {% endif %}{% endfor %}
 					{% endif %}
-					<gco:CharacterString>
+					</gco:CharacterString>
 				</gmd:abstract>
 				<srv:serviceType>
 					 <gco:LocalName>OGC:SOS</gco:LocalName>
@@ -269,11 +223,10 @@ This station provides the following variables: {% for variable in variables %}{{
 						<gmd:temporalElement>
 						 <gmd:EX_TemporalExtent>
 							 <gmd:extent>
-								 <gml:TimePeriod>
-									 <gml:description gco:nilReason="missing" />
+								 <gml:TimePeriod gml:id="timeperiod-serviceidentification-{{ station }}">
+									 <gml:description />
 									 <gml:beginPosition>{{ starting.isoformat() }}</gml:beginPosition>
 									 <gml:endPosition>{{ ending.isoformat() }}</gml:endPosition>
-									 <gml:timeInterval gco:nilReason="missing" />
 								 </gml:TimePeriod>
 							 </gmd:extent>
 						 </gmd:EX_TemporalExtent>
@@ -315,7 +268,6 @@ This station provides the following variables: {% for variable in variables %}{{
 				<srv:operatesOn xlink:href="#DataIdentification"/>
 		 </srv:SV_ServiceIdentification>
 	</gmd:identificationInfo>
-
 
 	<gmd:distributionInfo>
 		<gmd:MD_Distribution>

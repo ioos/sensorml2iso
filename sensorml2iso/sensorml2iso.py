@@ -1,12 +1,16 @@
+import os
+import errno
+import io
+import sys
 from datetime import datetime, timedelta
 from dateutil import parser
 import pytz
 
 # import urllib3
-from urllib import unquote, urlencode
+from urllib import quote, unquote, urlencode
 from urlparse import urlparse
 from collections import OrderedDict
-# from lxml import etree
+from lxml import etree
 
 # import numpy as np
 import pandas as pd
@@ -37,11 +41,13 @@ class Sensorml2Iso:
         List of station URNs to filter by for processing
     getobs_req_hours : int
         Number of hours from last valid station observation time to use in GetObservation request example URLs
+    output_dir : str
+        Name of an output directory (relative) to output ISO 19115-2 XML metadata to
     more : str
         More class attributes...
     """
 
-    def __init__(self, service=None, active_station_days=None, stations=None, getobs_req_hours=None, verbose=False):
+    def __init__(self, service=None, active_station_days=None, stations=None, getobs_req_hours=None, output_dir=None, verbose=False):
         """
         """
 
@@ -53,11 +59,23 @@ class Sensorml2Iso:
         self.verbose = verbose
 
         self.service_url = urlparse(self.service)
-        self.output_directory = self.service_url.netloc
+        self.server_name = self.service_url.netloc
 
-        self.run_test()
+        self.log = io.open('sensorml2iso.log', mode='wt', encoding='utf-8')
+
+        if output_dir is not None:
+            self.output_directory = output_dir
+        else:
+            self.output_directory = self.service_url.netloc
+        self.create_output_dir()
         if self.verbose:
-            self.log = open('sensorml2iso.log', mode='wt')
+            try:
+                # self.csv = io.open('sensorml2iso.csv', mode='wt', encoding='utf-8')
+                self.csv = open('sensorml2iso.csv', mode='wt')
+            except OSError:
+                pass
+            self.run_test()
+
 
     def run(self):
         """
@@ -96,8 +114,8 @@ class Sensorml2Iso:
 
         # print(stations_df[stations_df.ending > station_active_date.isoformat()].to_csv().encode('utf-8'))
         if self.verbose:
-            self.log.write(stations_df[stations_df.ending > station_active_date.isoformat()].to_csv(encoding='utf-8'))
-        # self.stations_df = stations_df
+            # self.csv.write(unicode(stations_df[stations_df.ending > station_active_date.isoformat()].to_csv(encoding='utf-8')))
+            self.csv.write(stations_df[stations_df.ending > station_active_date.isoformat()].to_csv(encoding='utf-8'))
 
         self.generate_iso(stations_df)
         return
@@ -123,7 +141,9 @@ class Sensorml2Iso:
         oFrmt = 'text/xml; subtype="sensorML/1.0.1/profiles/ioos_sos/1.0"'
         params = {'service': 'SOS', 'request': 'GetCapabilities', 'acceptVersions': '1.0.0'}
         sos_url_params = sos_url + '?' + urlencode(params)
-        sos_url_params_unencoded = unquote(sos_url_params)
+        sos_url_params_esc = sos_url_params.replace("&", "&amp;")
+        #sos_url_params_quoted = quote(sos_url_params,"/=:")
+        # sos_url_params_unquoted = unquote(sos_url_params)
 
         sosgc = SensorObservationService(sos_url_params)
         if station_urns_sel is not None:
@@ -145,18 +165,11 @@ class Sensorml2Iso:
             else:
                 sml = sml_lst[station_idx]
 
-            # debug MW:
-            # text_content approach doesn't work:
-            # print(sml._root.text_content)
-            # if station_idx == 0:
-            #    print(etree.tostring(sml._root))
+            # debug:
+            if self.verbose:
+                self.log.write(unicode(etree.tostring(sml._root)))
 
             ds = IoosDescribeSensor(sml._root)
-            # debug MW:
-            # print(str(ds))
-            if station_idx == 0:
-                for var in ds.variables:
-                    print("variable: {var}".format(var=var))
 
             pos = testXMLValue(ds.system.location.find(self.nsp('gml:Point/gml:pos')))
 
@@ -172,14 +185,6 @@ class Sensorml2Iso:
                 name = testXMLAttribute(d, "name")
                 # url = document.documents[0].url
                 documents_dct[name] = document
-
-            # MW: this can be removed eventually:
-            # Assume there's a single DocumentList/member; will read the first one only.
-            if len(documents) > 0:
-                document = Documentation(documents[0])
-                webpage_url = document.documents[0].url
-            else:
-                webpage_url = None
 
             contacts = system_el.findall(self.nsp('sml:contact/sml:ContactList/sml:member'))
             contacts_dct = {}
@@ -197,13 +202,14 @@ class Sensorml2Iso:
 
             station = OrderedDict()
             station['station_urn'] = station_urn
-            station['sos_url'] = sos_url_params_unencoded
+            station['sos_url'] = sos_url_params_esc
             station['lon'] = float(pos.split()[1])
             station['lat'] = float(pos.split()[0])
 
             station['shortName'] = ds.shortName
             station['longName'] = ds.longName
             station['wmoID'] = ds.get_ioos_def('wmoID', 'identifier', ont)
+            station['serverName'] = self.server_name
 
             # Some capabilities-level metadata:
             station['title'] = sosgc.identification.title
@@ -216,7 +222,6 @@ class Sensorml2Iso:
             station['platformType'] = ds.platformType
             station['parentNetwork'] = ds.get_ioos_def('parentNetwork', 'classifier', ont)
             station['sponsor'] = ds.get_ioos_def('sponsor', 'classifier', ont)
-            station['webpage_url'] = webpage_url
 
             # store some nested dictionaries in 'station' for appopriate SensorML sources:
             station['contacts_dct'] = contacts_dct
@@ -247,6 +252,12 @@ class Sensorml2Iso:
             # create a dict to store parameters for valid example GetObservation requests for station:
             getobs_req_dct = {}
 
+            # debug:
+            if self.verbose:
+                for var in ds.variables:
+                    self.log.write(u"variable: {var}\n".format(var=var))
+                    print("variable: {var}".format(var=var))
+
             # print(sosgc.contents)
             # for id, offering in sosgc.contents.iteritems():
             #    print("sosgc.contents: {item}".format(item=id))
@@ -258,11 +269,15 @@ class Sensorml2Iso:
                     response_formats = sosgc.content.response_formats
             # response_formats = [ sosgc.content.response_formats for id, sosgc.content in sosgc.contents.items() if sosgc.content.name == station_urn ]
 
-            for format in response_formats:
-                print("responseFormat: {format}".format(format=format))
+            if self.verbose:
+                for format in response_formats:
+                    self.log.write(u"responseFormat: {format}\n".format(format=format))
+                    print("responseFormat: {format}".format(format=format))
 
-            event_time = "{end:%Y-%m-%dT%H:%M:%S%z}/{begin:%Y-%m-%dT%H:%M:%S%z}".format(end=ds.ending, begin=ds.ending - timedelta(hours=self.getobs_req_hours))
-            print("eventTime: {time}".format(time=event_time))
+            event_time = "{end:%Y-%m-%dT%H:%M:%S%z}/{begin:%Y-%m-%dT%H:%M:%S%z}\n".format(end=ds.ending, begin=ds.ending - timedelta(hours=self.getobs_req_hours))
+            if self.verbose:
+                self.log.write(u"eventTime: {time}\n".format(time=event_time))
+                print("eventTime: {time}".format(time=event_time))
 
             # getobs_params_base = {'service': 'SOS', 'request': 'GetObservation', 'version': '1.0.0', 'offering': station_urn, 'responseFormat': 'application/json'}
             getobs_params_base = {'service': 'SOS', 'request': 'GetObservation', 'version': '1.0.0', 'offering': station_urn, 'eventTime': event_time, 'responseFormat': response_formats[-1]}
@@ -270,15 +285,19 @@ class Sensorml2Iso:
             for variable in ds.variables:
                 getobs_params = getobs_params_base.copy()
                 getobs_params['observedProperty'] = variable
-                getobs_request_url = sos_url + '?' + urlencode(getobs_params)
-                getobs_request_url_unencoded = unquote(getobs_request_url)
-                getobs_req_dct[variable] = getobs_request_url
-                print ("\n\ngetobs_request_url (var: {variable}): {getobs_request_url},\ngetobs_request_url_unencoded (var: {variable}): {getobs_request_url_unencoded}".format(variable=variable.split("/")[-1], getobs_request_url=getobs_request_url, getobs_request_url_unencoded=getobs_request_url_unencoded))
+                getobs_request_url = sos_url + '?' + quote(urlencode(getobs_params))
+                getobs_request_url_unencoded = unquote(getobs_request_url).replace("&", "&amp;")
+                getobs_req_dct[variable] = getobs_request_url_unencoded
+                if self.verbose:
+                    self.log.write(u"\n\ngetobs_request_url (var: {variable}): {getobs_request_url},\ngetobs_request_url_unencoded (var: {variable}): {getobs_request_url_unencoded}".format(variable=variable.split("/")[-1], getobs_request_url=getobs_request_url, getobs_request_url_unencoded=getobs_request_url_unencoded))
+                    print("\n\ngetobs_request_url (var: {variable}): {getobs_request_url},\ngetobs_request_url_unencoded (var: {variable}): {getobs_request_url_unencoded}".format(variable=variable.split("/")[-1], getobs_request_url=getobs_request_url, getobs_request_url_unencoded=getobs_request_url_unencoded))
 
             # debug:
             now = datetime.now(pytz.utc)
             then = now - timedelta(hours=self.getobs_req_hours)
-            print("now: {now:%Y-%m-%dT%H:%M:%S%z}, then: {then:%Y-%m-%dT%H:%M:%S%z}".format(now=now, then=then))
+            if self.verbose:
+                self.log.write(u"now: {now:%Y-%m-%dT%H:%M:%S%z}, then: {then:%Y-%m-%dT%H:%M:%S%z}\n".format(now=now, then=then))
+                print("now: {now:%Y-%m-%dT%H:%M:%S%z}, then: {then:%Y-%m-%dT%H:%M:%S%z}".format(now=now, then=then))
 
             station['getobs_req_dct'] = getobs_req_dct
 
@@ -292,50 +311,87 @@ class Sensorml2Iso:
     def generate_iso(self, df):
         """
         """
-        ctx = {}
-        # populate some general elements for the template:
-        # we can use format filters in the template to format dates...
-        # ctx['metadataDate'] = "{metadata_date:%Y-%m-%d}".format(metadata_date=datetime.today())
-        ctx['metadataDate'] = datetime.now()
 
-        # get the first station:
-        station = df.iloc[0]
-        # ctx['']
-        ctx['identifier'] = station.station_urn
-        ctx['contacts_dct'] = station['contacts_dct']
-        ctx['documents_dct'] = station['documents_dct']
-
-        ctx['sos_url'] = station['sos_url']
-        ctx['lon'] = station['lon']
-        ctx['lat'] = station['lat']
-        ctx['shortName'] = station.shortName
-        ctx['longName'] = station.longName
-        ctx['wmoID'] = station.wmoID
-
-        ctx['title'] = station.title
-        ctx['abstract'] = station.abstract
-        ctx['keywords'] = station.keywords
-        ctx['beginServiceDate'] = station.begin_service_date
-
-        ctx['platformType'] = station.platformType
-        ctx['parentNetwork'] = station.parentNetwork
-        ctx['sponsor'] = station.sponsor
-
-        ctx['starting'] = station.starting
-        ctx['ending'] = station.ending
-
-        ctx['parameter_uris'] = station.parameter_uris
-        ctx['parameters'] = station.parameter_uris
-        ctx['variables'] = station.variables
-
-        ctx['getobs_req_dct'] = station.getobs_req_dct
-
+        # set up the Jinja2 template:
         env = Environment(loader=PackageLoader('sensorml2iso', 'templates'), trim_blocks=True, lstrip_blocks=True)
         template = env.get_template('sensorml_iso.xml')
-        # template = env.get_template('sensorml_iso_min.xml')
-        print template.render(ctx)
+
+        for idx, station in df.iterrows():
+            ctx = {}
+            # populate some general elements for the template:
+            # we can use format filters in the template to format dates...
+            # ctx['metadataDate'] = "{metadata_date:%Y-%m-%d}".format(metadata_date=datetime.today())
+            ctx['metadataDate'] = datetime.now()
+
+            # debug: get the first station:
+            # station = df.iloc[0]
+
+            ctx['identifier'] = station.station_urn
+            ctx['contacts_dct'] = station['contacts_dct']
+            ctx['documents_dct'] = station['documents_dct']
+
+            ctx['sos_url'] = station['sos_url']
+            ctx['lon'] = station['lon']
+            ctx['lat'] = station['lat']
+            ctx['shortName'] = station.shortName
+            ctx['longName'] = station.longName
+            ctx['wmoID'] = station.wmoID
+            ctx['serverName'] = station.serverName
+
+            ctx['title'] = station.title
+            ctx['abstract'] = station.abstract
+            ctx['keywords'] = station.keywords
+            ctx['beginServiceDate'] = station.begin_service_date
+
+            ctx['platformType'] = station.platformType
+            ctx['parentNetwork'] = station.parentNetwork
+            ctx['sponsor'] = station.sponsor
+
+            ctx['starting'] = station.starting
+            ctx['ending'] = station.ending
+
+            ctx['parameter_uris'] = station.parameter_uris
+            ctx['parameters'] = station.parameter_uris
+            ctx['variables'] = station.variables
+
+            ctx['getobs_req_dct'] = station.getobs_req_dct
+
+            output_filename = os.path.join(self.output_directory, "{serverName}-{station}.xml".format(serverName=self.server_name, station=station.station_urn.replace(":", "_")))
+            try:
+                iso_xml = template.render(ctx)
+                output_file = io.open(output_filename, mode='wt', encoding='utf8')
+                output_file.write(iso_xml)
+                output_file.close()
+                if self.verbose:
+                    self.log.write(u"\nMetadata for station: {station} written to output file: {out_file}\n".format(station=station.station_urn, out_file=os.path.abspath(output_filename)))
+                    self.log.write(iso_xml)
+                    print("\nMetadata for station: {station} written to output file: {out_file}".format(station=station.station_urn, out_file=os.path.abspath(output_filename)))
+                    print(iso_xml)
+            except OSError as ex:
+                if ex.errno == errno.EEXIST:
+                    self.log.write(u"Output file: {out_file} already exists, skipping.\n".format(out_file=output_filename))
+                    print("Output file: {out_file} already exists, skipping.".format(out_file=output_filename))
+                    # sys.exit("Error: the output directory passed: {output_dir} already exists.".format(output_dir=os.path.abspath(self.output_directory)))
+                else:
+                    sys.exit("Error: Unable to open output file: {out_file} for writing, aborting.".format(out_file=output_filename))
+
+    def create_output_dir(self):
+        """
+        """
+        try:
+            os.makedirs(self.output_directory)
+            # raise OSError
+        except OSError as ex:
+            if ex.errno == errno.EEXIST and os.path.isdir(self.output_directory):
+                self.log.write(u"Error: the output directory passed: {output_dir} already exists.\n".format(output_dir=os.path.abspath(self.output_directory)))
+                sys.exit("Error: the output directory passed: {output_dir} already exists.".format(output_dir=os.path.abspath(self.output_directory)))
+            else:
+                self.log.write(u"Error: the output directory passed: {output_dir} was not able to be created.\n".format(output_dir=os.path.abspath(self.output_directory)))
+                sys.exit("Error: the output directory passed: {output_dir} was not able to be created.".format(output_dir=os.path.abspath(self.output_directory)))
 
     def run_test(self):
+        """
+        """
         print("Service: {service}, verbose: {verbose}, o: {o}".format(service=self.service, verbose=self.verbose, o=self.output_directory))
         active_date = datetime.now() - timedelta(days=self.active_station_days)
 
