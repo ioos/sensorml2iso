@@ -146,6 +146,7 @@ This station provides the following variables: {{ variables | replace("_", " ") 
 							</gmd:northBoundLatitude>
 						</gmd:EX_GeographicBoundingBox>
 					</gmd:geographicElement>
+					{% if starting and ending is not none %}
 					<gmd:temporalElement>
 						<gmd:EX_TemporalExtent>
 							<gmd:extent>
@@ -157,6 +158,7 @@ This station provides the following variables: {{ variables | replace("_", " ") 
 							</gmd:extent>
 						</gmd:EX_TemporalExtent>
 					</gmd:temporalElement>
+					{% endif %}
 				</gmd:EX_Extent>
 			</gmd:extent>
 		</gmd:MD_DataIdentification>
@@ -169,6 +171,7 @@ This station provides the following variables: {{ variables | replace("_", " ") 
 							<gmd:title>
 								 <gco:CharacterString>{{ title }}</gco:CharacterString>
 							</gmd:title>
+							{% if beginServiceDate is not none %}
 							<gmd:date>
 								 <gmd:CI_Date>
 										<gmd:date>
@@ -180,6 +183,7 @@ This station provides the following variables: {{ variables | replace("_", " ") 
 										</gmd:dateType>
 								 </gmd:CI_Date>
 							</gmd:date>
+							{% endif %}
 							<gmd:citedResponsibleParty>
 								{{ CI_ResponsibleParty(contacts_dct.publisher) }}
 							</gmd:citedResponsibleParty>
@@ -220,6 +224,7 @@ This station provides the following variables: {% for variable in variables %}{{
 							 </gmd:northBoundLatitude>
 						 </gmd:EX_GeographicBoundingBox>
 						</gmd:geographicElement>
+						{% if starting is not none and ending is not none %}
 						<gmd:temporalElement>
 						 <gmd:EX_TemporalExtent>
 							 <gmd:extent>
@@ -231,6 +236,7 @@ This station provides the following variables: {% for variable in variables %}{{
 							 </gmd:extent>
 						 </gmd:EX_TemporalExtent>
 						</gmd:temporalElement>
+						{% endif %}
 					</gmd:EX_Extent>
 				</srv:extent>
 				<srv:couplingType>

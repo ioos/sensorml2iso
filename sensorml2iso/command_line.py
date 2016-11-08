@@ -35,7 +35,7 @@ def main():
     parser.add_argument('-s', '--service', type=str, required=True,
                         help='URL of SOS service to parse and convert.  Examples: {urls}'.format(urls=os.linesep.join(SOS_URLS)))
 
-    parser.add_argument('-d', '--active_station_days', type=int, required=False, default=30,
+    parser.add_argument('-d', '--active_station_days', type=int, required=False, default=None,
                         help='Number of days from present to use to filter SOS stations for active/inactive designation.  Inactive are excluded from processing.')
 
     parser.add_argument('--stations', type=str,
@@ -57,14 +57,13 @@ def main():
     # do some minimal arg validation:
     if args.stations is not None:
         stations = args.stations.split(",")
-        print("stations len: " + str(len(stations)))
         if len(stations) == 1 and len(stations[0]) == 0:
             sys.exit("Error: '--stations' parameter value must contain comma-separated list of stations to properly filter.  Current value: {param}".format(param=stations))
     else:
         stations = None
 
     service_url = urlparse(args.service)
-    print(service_url)
+    # print(service_url)
     if not service_url.scheme or not service_url.netloc:
         sys.exit("Error: '--service' parameter value must contain a valid URL.  Value passed: {param}".format(param=args.service))
     if service_url.params or service_url.query:
