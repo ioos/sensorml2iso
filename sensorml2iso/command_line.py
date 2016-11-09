@@ -25,8 +25,7 @@ def main():
     Command line interface
     """
     kwargs = {
-        'description': 'Parse an IOOS i52N SOS endpoint and convert SensorML to \
-        ISO 19115-2 xml metadata',
+        'description': 'Parse an IOOS i52N SOS endpoint and convert SensorML to ISO 19115-2 xml metadata',
         'epilog': _EPILOG,
         'formatter_class': argparse.RawDescriptionHelpFormatter,
     }
@@ -36,7 +35,7 @@ def main():
                         help='URL of SOS service to parse and convert.  Examples: {urls}'.format(urls=os.linesep.join(SOS_URLS)))
 
     parser.add_argument('-d', '--active_station_days', type=int, required=False, default=None,
-                        help='Number of days from present to use to filter SOS stations for active/inactive designation.  Inactive are excluded from processing.')
+                        help='Number of days from present to use to filter SOS stations not actively reporting observations for active/inactive designation.  Inactive stations are excluded from processing.')
 
     parser.add_argument('--stations', type=str,
                         help='Comma-separated list of station URNs to filter by. Eg. \'--stations=urn:ioos:station:nanoos:apl_nemo,urn:ioos:station:nanoos:apl_npb1ptwells\'.')
@@ -45,7 +44,7 @@ def main():
                         help='Number of hours from last valid station observation time to use in GetObservation request example URLs.  Default: 2.')
 
     parser.add_argument('--response_formats', type=str, required=False, default='application/json,text/xml; subtype="om/1.0.0/profiles/ioos_sos/1.0"',
-                        help='Comma-separated list of SOS responseFormats to use in creating GetObservation download links for each observed parameter.  Default [\'application/json\', \'text/xml; subtype="om/1.0.0/profiles/ioos_sos/1.0"\'].')
+                        help='Comma-separated list of SOS responseFormats to use in creating GetObservation download links for each observed parameter.  Eg. \'--response_formats=application/json,application/zip; subtype=x-netcdf\'.  Default: [\'application/json\', \'text/xml; subtype="om/1.0.0/profiles/ioos_sos/1.0"\'].')
 
     parser.add_argument('--output_dir', type=str,
                         help='Specify an output directory (relative to current working directory) to write ISO 19115-2 XML files to.  If omitted \
