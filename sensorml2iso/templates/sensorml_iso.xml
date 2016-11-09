@@ -277,54 +277,16 @@ This station provides the following variables: {% for variable in variables %}{{
 
 	<gmd:distributionInfo>
 		<gmd:MD_Distribution>
-			<gmd:distributionFormat xlink:title="Web Mapping Service for vector and gridded">
+			{% for format in response_formats %}
+			<gmd:distributionFormat>
 				<gmd:MD_Format>
 					<gmd:name>
-						<gco:CharacterString>WMS</gco:CharacterString>
+						<gco:CharacterString>{{ format }}</gco:CharacterString>
 					</gmd:name>
 					<gmd:version gco:nilReason="unknown"/>
 				</gmd:MD_Format>
 			</gmd:distributionFormat>
-			<gmd:distributionFormat xlink:title="Web Feature Service for vector">
-				<gmd:MD_Format>
-					<gmd:name>
-						<gco:CharacterString>WFS</gco:CharacterString>
-					</gmd:name>
-					<gmd:version gco:nilReason="unknown"/>
-				</gmd:MD_Format>
-			</gmd:distributionFormat>
-			<gmd:distributionFormat xlink:title="Sensor Observation Service for sensor data">
-				<gmd:MD_Format>
-					<gmd:name>
-						<gco:CharacterString>SOS</gco:CharacterString>
-					</gmd:name>
-					<gmd:version gco:nilReason="unknown"/>
-				</gmd:MD_Format>
-			</gmd:distributionFormat>
-			<gmd:distributionFormat xlink:title="Open-source Project for a Network Data Access Protocol for gridded">
-				<gmd:MD_Format>
-					<gmd:name>
-						<gco:CharacterString>OPeNDAP</gco:CharacterString>
-					</gmd:name>
-					<gmd:version gco:nilReason="unknown"/>
-				</gmd:MD_Format>
-			</gmd:distributionFormat>
-			<gmd:distributionFormat xlink:title="Web Coverage Service for gridded">
-				<gmd:MD_Format>
-					<gmd:name>
-						<gco:CharacterString>WCS</gco:CharacterString>
-					</gmd:name>
-					<gmd:version gco:nilReason="unknown"/>
-				</gmd:MD_Format>
-			</gmd:distributionFormat>
-			<gmd:distributionFormat xlink:title="Network Common Data Form download for gridded">
-				<gmd:MD_Format>
-					<gmd:name>
-						<gco:CharacterString>netCDF</gco:CharacterString>
-					</gmd:name>
-					<gmd:version gco:nilReason="unknown"/>
-				</gmd:MD_Format>
-			</gmd:distributionFormat>
+			{% endfor %}
 			<gmd:distributor>
 				<gmd:MD_Distributor>
 					<gmd:distributorContact xlink:title="contacts_dct.publisher.organization">
@@ -332,6 +294,32 @@ This station provides the following variables: {% for variable in variables %}{{
 					</gmd:distributorContact>
 				</gmd:MD_Distributor>
 			</gmd:distributor>
+			{% for id, getobs_req in getobs_req_dct.iteritems() %}
+			<gmd:transferOptions xlink:title="{{ shortName }} - {{ getobs_req.variable | replace("_", " ") | capitalize }} - {{ getobs_req.format_name }}">
+				<gmd:MD_DigitalTransferOptions>
+					<gmd:onLine>
+						<gmd:CI_OnlineResource>
+							<gmd:linkage>
+								<gmd:URL>{{ getobs_req.url }}</gmd:URL>
+							</gmd:linkage>
+							<gmd:protocol>
+								<gco:CharacterString>WWW:LINK - {{ getobs_req.format_type }}</gco:CharacterString>
+							</gmd:protocol>
+							<gmd:name>
+								<gco:CharacterString>Station: {{ shortName }} - {{ getobs_req.variable | replace("_", " ") | capitalize }} - {{ getobs_req.format_name }}</gco:CharacterString>
+							</gmd:name>
+							<gmd:description>
+								<gco:CharacterString>GetObservation download link for {{ getobs_req.variable | replace("_", " ") | capitalize }} in {{ getobs_req.format_name }}</gco:CharacterString>
+							</gmd:description>
+							<gmd:function>
+								<gmd:CI_OnLineFunctionCode codeList="http://www.ngdc.noaa.gov/metadata/published/xsd/schema/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode"
+									codeListValue="download">download</gmd:CI_OnLineFunctionCode>
+							</gmd:function>
+						</gmd:CI_OnlineResource>
+					</gmd:onLine>
+				</gmd:MD_DigitalTransferOptions>
+			</gmd:transferOptions>
+			{% endfor %}
 			{% for id, document in documents_dct.iteritems() %}
 			<gmd:transferOptions xlink:title="{{ shortName }}">
 				<gmd:MD_DigitalTransferOptions>

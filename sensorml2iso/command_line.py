@@ -41,11 +41,14 @@ def main():
     parser.add_argument('--stations', type=str,
                         help='Comma-separated list of station URNs to filter by. Eg. \'--stations=urn:ioos:station:nanoos:apl_nemo,urn:ioos:station:nanoos:apl_npb1ptwells\'.')
 
-    parser.add_argument('--getobs_req_hours', type=int, required=False, default=5,
-                        help='Number of hours from last valid station observation time to use in GetObservation request example URLs.')
+    parser.add_argument('--getobs_req_hours', type=int, required=False, default=2,
+                        help='Number of hours from last valid station observation time to use in GetObservation request example URLs.  Default: 2.')
+
+    parser.add_argument('--response_formats', type=str, required=False, default='application/json,text/xml; subtype="om/1.0.0/profiles/ioos_sos/1.0"',
+                        help='Comma-separated list of SOS responseFormats to use in creating GetObservation download links for each observed parameter.  Default [\'application/json\', \'text/xml; subtype="om/1.0.0/profiles/ioos_sos/1.0"\'].')
 
     parser.add_argument('--output_dir', type=str,
-                        help='Specify an output directory (relative to current) to write ISO 19115-2 XML files to.  If omitted \
+                        help='Specify an output directory (relative to current working directory) to write ISO 19115-2 XML files to.  If omitted \
                         the default output directory will a subdirectory using the domain name of the SOS service URL passed \
                         (eg. sos.gliders.ioos.us).')
 
@@ -62,6 +65,13 @@ def main():
     else:
         stations = None
 
+    if args.response_formats is not None:
+        response_formats = args.response_formats.split(",")
+        if len(response_formats) == 1 and len(response_formats[0]) == 0:
+            sys.exit("Error: '--response_formats' parameter value must contain comma-separated list of formats to properly filter.  Current value: {param}".format(param=stations))
+    else:
+        response_formats = None
+
     service_url = urlparse(args.service)
     # print(service_url)
     if not service_url.scheme or not service_url.netloc:
@@ -77,6 +87,7 @@ def main():
         active_station_days=args.active_station_days,
         stations=stations,
         getobs_req_hours=args.getobs_req_hours,
+        response_formats=response_formats,
         output_dir=args.output_dir,
         verbose=args.verbose)
     obj.run()

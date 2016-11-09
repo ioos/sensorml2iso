@@ -42,13 +42,28 @@ class Sensorml2Iso:
         List of station URNs to filter by for processing
     getobs_req_hours : int
         Number of hours from last valid station observation time to use in GetObservation request example URLs
+    response_formats : str
+        List of responseFormat values to include in GetObservation download links
     output_dir : str
         Name of an output directory (relative) to output ISO 19115-2 XML metadata to
     more : str
         More class attributes...
     """
 
-    def __init__(self, service=None, active_station_days=None, stations=None, getobs_req_hours=None, output_dir=None, verbose=False):
+    RESPONSE_FORMAT_TYPE_MAP = {
+        'application/json': 'application/json',
+        'application/zip; subtype=x-netcdf': 'application/x-netcdf',
+        'text/xml; subtype="om/1.0.0"': 'text/xml',
+        'text/xml; subtype="om/1.0.0/profiles/ioos_sos/1.0"': 'text/xml'
+    }
+    RESPONSE_FORMAT_NAME_MAP = {
+        'application/json': 'JSON',
+        'application/zip; subtype=x-netcdf': 'NetCDF',
+        'text/xml; subtype="om/1.0.0"': 'XML (O&M 1.0)',
+        'text/xml; subtype="om/1.0.0/profiles/ioos_sos/1.0"': 'XML (IOOS SOS 1.0 Profile)'
+    }
+
+    def __init__(self, service=None, active_station_days=None, stations=None, getobs_req_hours=None, response_formats=None, output_dir=None, verbose=False):
         """
         """
 
@@ -57,6 +72,7 @@ class Sensorml2Iso:
         self.active_station_days = active_station_days
         self.stations = stations
         self.getobs_req_hours = getobs_req_hours
+        self.response_formats = response_formats
         self.verbose = verbose
 
         self.service_url = urlparse(self.service)
@@ -269,9 +285,6 @@ class Sensorml2Iso:
             station['parameters'] = ','.join(parameter_lst)
             station['variables'] = [var.split('/')[-1] for var in ds.variables]
 
-            # create a dict to store parameters for valid example GetObservation requests for station:
-            getobs_req_dct = {}
-
             # debug:
             if self.verbose:
                 self.log.write(u"\nProcessing station: {station}\n".format(station=station_urn))
@@ -284,6 +297,7 @@ class Sensorml2Iso:
             # for id, offering in sosgc.contents.iteritems():
             #    print("sosgc.contents: {item}".format(item=id))
 
+            # parse 'responseFormat' values and populate list:
             # response_formats = sosgc.contents[station_urn].response_formats
             response_formats = []
             for id, sosgc.content in sosgc.contents.items():
@@ -291,18 +305,27 @@ class Sensorml2Iso:
                     response_formats = sosgc.content.response_formats
             # response_formats = [ sosgc.content.response_formats for id, sosgc.content in sosgc.contents.items() if sosgc.content.name == station_urn ]
 
+            # subset responseFormats (response_formats) for download links matching those passed in --response_formats parameter
+            # (or 'application/json,application/zip; subtype=x-netcdf' by default):
+            download_formats = [response_format for response_format in response_formats if response_format in self.response_formats]
+            station['response_formats'] = response_formats
+            station['download_formats'] = download_formats
+
             if self.verbose:
                 for format in response_formats:
                     self.log.write(u"responseFormat: {format}\n".format(format=format))
                     print("responseFormat: {format}".format(format=format))
+                for format in download_formats:
+                    self.log.write(u"downloadFormats: {format}\n".format(format=format))
+                    print("downloadFormats: {format}".format(format=format))
 
             # calculate event_time using self.getobs_req_hours:
             if ds.starting is not None and ds.ending is not None:
-                event_time = "{begin:%Y-%m-%dT%H:%M:%S%z}/{end:%Y-%m-%dT%H:%M:%S%z}\n".format(begin=ds.ending - timedelta(hours=self.getobs_req_hours), end=ds.ending)
+                event_time = "{begin:%Y-%m-%dT%H:%M:%S}/{end:%Y-%m-%dT%H:%M:%S}\n".format(begin=ds.ending - timedelta(hours=self.getobs_req_hours), end=ds.ending)
             else:
                 now = datetime.now(pytz.utc)
                 then = now - timedelta(hours=self.getobs_req_hours)
-                event_time = "{begin:%Y-%m-%dT%H:%M:%S%z}/{end:%Y-%m-%dT%H:%M:%S%z}\n".format(begin=then, end=now)
+                event_time = "{begin:%Y-%m-%dT%H:%M:%S}/{end:%Y-%m-%dT%H:%M:%S}\n".format(begin=then, end=now)
                 if self.verbose:
                     self.log.write(u"then: {then:%Y-%m-%dT%H:%M:%S%z}, now: {now:%Y-%m-%dT%H:%M:%S%z}\n".format(then=then, now=now))
                     print("then: {then:%Y-%m-%dT%H:%M:%S%z}, now: {now:%Y-%m-%dT%H:%M:%S%z}".format(then=then, now=now))
@@ -311,19 +334,28 @@ class Sensorml2Iso:
                 self.log.write(u"eventTime: {time}\n".format(time=event_time))
                 print("eventTime: {time}".format(time=event_time))
 
-            # getobs_params_base = {'service': 'SOS', 'request': 'GetObservation', 'version': '1.0.0', 'offering': station_urn, 'responseFormat': 'application/json'}
-            getobs_params_base = {'service': 'SOS', 'request': 'GetObservation', 'version': '1.0.0', 'offering': station_urn, 'eventTime': event_time, 'responseFormat': response_formats[-1]}
-
+            # create a dict to store parameters for valid example GetObservation requests for station:
+            getobs_req_dct = {}
+            # populate a parameters dictionary for download links for each 'observedProperty' type and secondly for each 'responseFormat' per observedProperty:
+            getobs_params_base = {'service': 'SOS', 'request': 'GetObservation', 'version': '1.0.0', 'offering': station_urn, 'eventTime': event_time}
             for variable in ds.variables:
                 getobs_params = getobs_params_base.copy()
                 getobs_params['observedProperty'] = variable
-                getobs_request_url_encoded = sos_url + '?' + urlencode(getobs_params)
-                getobs_request_url = unquote(getobs_request_url_encoded)
-                getobs_request_url_esc = getobs_request_url.replace("&", "&amp;")
-                getobs_req_dct[variable] = getobs_request_url_esc
-                if self.verbose:
-                    self.log.write(u"getobs_request_url (var: {variable}): {getobs_request_url}\ngetobs_request_url_esc (var: {variable}): {getobs_request_url_esc}\n".format(variable=variable.split("/")[-1], getobs_request_url=getobs_request_url, getobs_request_url_esc=getobs_request_url_esc))
-                    print("getobs_request_url (var: {variable}): {getobs_request_url}\ngetobs_request_url_esc (var: {variable}): {getobs_request_url_esc}".format(variable=variable.split("/")[-1], getobs_request_url=getobs_request_url, getobs_request_url_esc=getobs_request_url_esc))
+                variable = variable.split('/')[-1]
+                for format in download_formats:
+                    getobs_params['responseFormat'] = format
+                    getobs_request_url_encoded = sos_url + '?' + urlencode(getobs_params)
+                    getobs_request_url = unquote(getobs_request_url_encoded)
+                    getobs_request_url_esc = getobs_request_url.replace("&", "&amp;")
+                    getobs_req_dct[variable + '-' + format] = {
+                        'variable': variable,
+                        'url': getobs_request_url_esc,
+                        'format_type': self.RESPONSE_FORMAT_TYPE_MAP[format],
+                        'format_name': self.RESPONSE_FORMAT_NAME_MAP[format]
+                    }
+                    if self.verbose:
+                        self.log.write(u"getobs_request_url (var: {variable}): {getobs_request_url}\ngetobs_request_url_esc (var: {variable}): {getobs_request_url_esc}\n".format(variable=variable.split("/")[-1], getobs_request_url=getobs_request_url, getobs_request_url_esc=getobs_request_url_esc))
+                        print("getobs_request_url (var: {variable}): {getobs_request_url}\ngetobs_request_url_esc (var: {variable}): {getobs_request_url_esc}".format(variable=variable.split("/")[-1], getobs_request_url=getobs_request_url, getobs_request_url_esc=getobs_request_url_esc))
 
             # ToDo: finish adding the 'getobs_req_dct' to the output template
             station['getobs_req_dct'] = getobs_req_dct
@@ -380,7 +412,8 @@ class Sensorml2Iso:
             ctx['parameter_uris'] = station.parameter_uris
             ctx['parameters'] = station.parameter_uris
             ctx['variables'] = station.variables
-
+            ctx['response_formats'] = station.response_formats
+            ctx['download_formats'] = station.download_formats
             ctx['getobs_req_dct'] = station.getobs_req_dct
 
             output_filename = os.path.join(self.output_directory, "{serverName}-{station}.xml".format(serverName=self.server_name, station=station.station_urn.replace(":", "_")))
