@@ -19,7 +19,7 @@ kwargs = {
     },
     'install_requires': [
         'OWSLib>=0.11.0',
-        'flake8>=3.0.4',
+        'flake8>=2.5.1',
         'geopandas>=0.2.1',
         'jinja2>=2.7',
         'lxml>=3.5.0',

@@ -294,7 +294,7 @@ This station provides the following variables: {% for variable in variables %}{{
 					</gmd:distributorContact>
 				</gmd:MD_Distributor>
 			</gmd:distributor>
-			{% for id, getobs_req in getobs_req_dct.iteritems() %}
+			{% for id, getobs_req in getobs_req_dct | dictsort %}
 			<gmd:transferOptions xlink:title="{{ shortName }} - {{ getobs_req.variable | replace("_", " ") | capitalize }} - {{ getobs_req.format_name }}">
 				<gmd:MD_DigitalTransferOptions>
 					<gmd:onLine>
@@ -320,7 +320,7 @@ This station provides the following variables: {% for variable in variables %}{{
 				</gmd:MD_DigitalTransferOptions>
 			</gmd:transferOptions>
 			{% endfor %}
-			{% for id, document in documents_dct.iteritems() %}
+			{% for id, document in documents_dct | dictsort %}
 			<gmd:transferOptions xlink:title="{{ shortName }}">
 				<gmd:MD_DigitalTransferOptions>
 					<gmd:onLine>

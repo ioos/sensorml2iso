@@ -5,10 +5,13 @@ import sys
 from datetime import datetime, timedelta
 from dateutil import parser
 import pytz
+# import six
 
-# import urllib3
-from urllib import unquote, urlencode
-from urlparse import urlparse
+try:
+    from urllib.parse import unquote, urlencode, urlparse   # Python 3
+except ImportError:
+    from urllib import unquote, urlencode  # Python 2
+    from urlparse import urlparse
 from collections import OrderedDict
 # from lxml import etree
 from requests.exceptions import ConnectionError, ReadTimeout
@@ -373,6 +376,7 @@ class Sensorml2Iso:
 
         # set up the Jinja2 template:
         env = Environment(loader=PackageLoader('sensorml2iso', 'templates'), trim_blocks=True, lstrip_blocks=True)
+        # env.filters['sixiteritems'] = six.iteritems
         template = env.get_template('sensorml_iso.xml')
 
         for idx, station in df.iterrows():

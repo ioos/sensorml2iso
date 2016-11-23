@@ -1,8 +1,10 @@
 import argparse
 import os
 import sys
-from urlparse import urlparse
-
+try:
+    from urllib.parse import urlparse  # Python 3
+except ImportError:
+    from urlparse import urlparse  # Python 2
 from . import Sensorml2Iso
 
 _EPILOG = """
@@ -76,7 +78,7 @@ def main():
     if not service_url.scheme or not service_url.netloc:
         sys.exit("Error: '--service' parameter value must contain a valid URL.  Value passed: {param}".format(param=args.service))
     if service_url.params or service_url.query:
-        sys.exit("Error: '--service' parameter should not contain query parameters ('{query}'). Please include only the GetCapabilities root URL.  Value passed: {param}".format(query=service_url.query, param=args.service))
+        sys.exit("Error: '--service' parameter should not contain query parameters ('{query}'). Please include only the service endpoint URL.  Value passed: {param}".format(query=service_url.query, param=args.service))
 
     if args.output_dir is not None and os.path.isabs(args.output_dir):
         sys.exit("Error: '--output_dir' parameter value must not be an absolute path name, only relative path accepted.  Value passed: {param}".format(param=args.output_dir))
