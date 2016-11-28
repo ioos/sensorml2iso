@@ -23,7 +23,7 @@ sensorml2iso -s http://data.nanoos.org/52nsos/sos/kvp -d 14 --stations=urn:ioos:
 
 Parameters:
 
--s | --service : URL of SOS GetCapabilities
+-s | --service : SOS service endpoint URL
 
 -d | --active_station_days : (Optional) Number of days from present to use to filter SOS stations not actively reporting observations for active/inactive designation.  Inactive stations are excluded from processing.
 
