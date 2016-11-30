@@ -427,17 +427,17 @@ class Sensorml2Iso:
                 output_file.write(iso_xml)
                 output_file.close()
                 if self.verbose:
-                    self.log.write(u"\nMetadata for station: {station} written to output file: {out_file}\n".format(station=station.station_urn, out_file=os.path.abspath(output_filename)))
-                    # self.log.write(iso_xml)
+                    self.log.write(u"\n\nMetadata for station: {station} written to output file: {out_file}".format(station=station.station_urn, out_file=os.path.abspath(output_filename)))
                     print("\nMetadata for station: {station} written to output file: {out_file}".format(station=station.station_urn, out_file=os.path.abspath(output_filename)))
-                    # print(iso_xml)
             except OSError as ex:
                 if ex.errno == errno.EEXIST:
-                    self.log.write(u"Output file: {out_file} already exists, skipping.\n".format(out_file=output_filename))
-                    print("Output file: {out_file} already exists, skipping.".format(out_file=output_filename))
-                    # sys.exit("Error: the output directory passed: {output_dir} already exists.".format(output_dir=os.path.abspath(self.output_directory)))
+                    if self.verbose:
+                        self.log.write(u"\nWarning, output file: {out_file} already exists, and can't be written to, skipping.".format(out_file=output_filename))
+                        print("Warning, output file: {out_file} already exists, and can't be written to, skipping.".format(out_file=output_filename))
                 else:
-                    sys.exit("Error: Unable to open output file: {out_file} for writing, aborting.".format(out_file=output_filename))
+                    self.log.write(u"\Warning: Unable to open output file: {out_file} for writing, skipping.".format(out_file=output_filename))
+                    print("Warning: Unable to open output file: {out_file} for writing, skipping.".format(out_file=output_filename))
+                    continue
 
     def create_output_dir(self):
         """
@@ -448,10 +448,11 @@ class Sensorml2Iso:
             # raise OSError
         except OSError as ex:
             if ex.errno == errno.EEXIST and os.path.isdir(self.output_directory):
-                self.log.write(u"Error: the configured output directory: {output_dir} already exists.\n".format(output_dir=os.path.abspath(self.output_directory)))
-                sys.exit("Error: the configured output directory: {output_dir} already exists.".format(output_dir=os.path.abspath(self.output_directory)))
+                self.log.write(u"\nWarning: the configured output directory: {output_dir} already exists. Files will be overwritten.".format(output_dir=os.path.abspath(self.output_directory)))
+                print("Warning: the configured output directory: {output_dir} already exists. Files will be overwritten.".format(output_dir=os.path.abspath(self.output_directory)))
+                # sys.exit("Error: the configured output directory: {output_dir} already exists.".format(output_dir=os.path.abspath(self.output_directory)))
             else:
-                self.log.write(u"Error: the configured output directory: {output_dir} was not able to be created.\n".format(output_dir=os.path.abspath(self.output_directory)))
+                self.log.write(u"\nError: the configured output directory: {output_dir} was not able to be created.".format(output_dir=os.path.abspath(self.output_directory)))
                 sys.exit("Error: the configured output directory: {output_dir} was not able to be created.".format(output_dir=os.path.abspath(self.output_directory)))
 
     def run_test(self):
