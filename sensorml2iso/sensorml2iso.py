@@ -103,7 +103,12 @@ class Sensorml2Iso:
                 for station in self.stations:
                     self.log.write(u"URN: {station}\n".format(station=station))
                     print("URN: {station}".format(station=station))
-        self.create_output_dir()
+        if os.path.exists(output_dir):
+            if not os.path.isdir(output_dir):
+                self.log.write(u"Error: the configured output directory: {output_dir} exists, but is not a directory".format(output_dir=os.path.abspath(self.output_directory)))
+                sys.exit("Error: the configured output directory: {output_dir} exists, but is not a directory".format(output_dir=os.path.abspath(self.output_directory)))
+        else:
+            self.create_output_dir()
 
     def run(self):
         """
