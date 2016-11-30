@@ -80,9 +80,6 @@ def main():
     if service_url.params or service_url.query:
         sys.exit("Error: '--service' parameter should not contain query parameters ('{query}'). Please include only the service endpoint URL.  Value passed: {param}".format(query=service_url.query, param=args.service))
 
-    if args.output_dir is not None and os.path.isabs(args.output_dir):
-        sys.exit("Error: '--output_dir' parameter value must not be an absolute path name, only relative path accepted.  Value passed: {param}".format(param=args.output_dir))
-
     obj = Sensorml2Iso(
         service=args.service,
         active_station_days=args.active_station_days,
