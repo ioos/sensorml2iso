@@ -48,6 +48,9 @@ def main():
     parser.add_argument('--response_formats', type=str, required=False, default='application/json,text/xml; subtype="om/1.0.0/profiles/ioos_sos/1.0"',
                         help='Comma-separated list of SOS responseFormats to use in creating GetObservation download links for each observed parameter.  Eg. \'--response_formats=application/json,application/zip; subtype=x-netcdf\'.  Default: [\'application/json\', \'text/xml; subtype="om/1.0.0/profiles/ioos_sos/1.0"\'].')
 
+    parser.add_argument('--sos_type', type=str, required=False, default='ioos',
+                        help='Name of SOS implementation type [ioos|ndbc|coops].  This is not implemented currently, placeholder for differing SOS behavior, if necessary.  Default: \'ioos\'.')
+
     parser.add_argument('--output_dir', type=str,
                         help='Specify an output directory (relative to current working directory) to write ISO 19115-2 XML files to.  If omitted \
                         the default output directory will a subdirectory using the domain name of the SOS service URL passed \
@@ -73,6 +76,9 @@ def main():
     else:
         response_formats = None
 
+    if args.sos_type.lower() not in ['ioos', 'ndbc', 'coops']:
+        sys.exit("Error: '--sos_type' parameter value must be one of 'ioos', 'ndbc', or 'coops'.  Value passed: {param}".format(param=args.sos_type))
+
     service_url = urlparse(args.service)
     # print(service_url)
     if not service_url.scheme or not service_url.netloc:
@@ -86,6 +92,7 @@ def main():
         stations=stations,
         getobs_req_hours=args.getobs_req_hours,
         response_formats=response_formats,
+        sos_type=args.sos_type.lower(),
         output_dir=args.output_dir,
         verbose=args.verbose)
     obj.run()

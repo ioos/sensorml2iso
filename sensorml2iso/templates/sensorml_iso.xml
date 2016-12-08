@@ -205,6 +205,7 @@ This station provides the following variables: {% for variable in variables %}{{
 				</srv:serviceType>
 				<srv:extent>
 					<gmd:EX_Extent>
+						{% if lon is not none and lat is not none %}
 						<gmd:geographicElement>
 						 <gmd:EX_GeographicBoundingBox>
 							 <gmd:extentTypeCode>
@@ -224,6 +225,9 @@ This station provides the following variables: {% for variable in variables %}{{
 							 </gmd:northBoundLatitude>
 						 </gmd:EX_GeographicBoundingBox>
 						</gmd:geographicElement>
+						{% else %}
+						<gmd:geographicElement nilReason="missing" />
+						{% endif %}
 						{% if starting is not none and ending is not none %}
 						<gmd:temporalElement>
 						 <gmd:EX_TemporalExtent>
@@ -294,6 +298,30 @@ This station provides the following variables: {% for variable in variables %}{{
 					</gmd:distributorContact>
 				</gmd:MD_Distributor>
 			</gmd:distributor>
+			<gmd:transferOptions xlink:title="{{ shortName }} - DescribeSensor">
+				<gmd:MD_DigitalTransferOptions>
+					<gmd:onLine>
+						<gmd:CI_OnlineResource>
+							<gmd:linkage>
+								<gmd:URL>{{ describesensor_url }}</gmd:URL>
+							</gmd:linkage>
+							<gmd:protocol>
+								<gco:CharacterString>OGC:SOS:DescribeSensor</gco:CharacterString>
+							</gmd:protocol>
+							<gmd:name>
+								<gco:CharacterString>DescribeSensor - Station: {{ shortName }}</gco:CharacterString>
+							</gmd:name>
+							<gmd:description>
+								<gco:CharacterString>DescribeSensor URL for station {{ longName }}</gco:CharacterString>
+							</gmd:description>
+							<gmd:function>
+								<gmd:CI_OnLineFunctionCode codeList="http://www.ngdc.noaa.gov/metadata/published/xsd/schema/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode"
+									codeListValue="download">download</gmd:CI_OnLineFunctionCode>
+							</gmd:function>
+						</gmd:CI_OnlineResource>
+					</gmd:onLine>
+				</gmd:MD_DigitalTransferOptions>
+			</gmd:transferOptions>
 			{% for id, getobs_req in getobs_req_dct | dictsort %}
 			<gmd:transferOptions xlink:title="{{ shortName }} - {{ getobs_req.variable | replace("_", " ") | capitalize }} - {{ getobs_req.format_name }}">
 				<gmd:MD_DigitalTransferOptions>

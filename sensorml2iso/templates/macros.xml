@@ -10,30 +10,30 @@
 		<gmd:CI_Contact>
 			<gmd:address>
 				<gmd:CI_Address>
-					{% if contact.region is not none %}
-					<gmd:administrativeArea>
-						<gco:CharacterString>{{ contact.region }}</gco:CharacterString>
-					</gmd:administrativeArea>
+					{% if contact.address is not none %}
+					<gmd:deliveryPoint>
+						<gco:CharacterString>{{ contact.address }}</gco:CharacterString>
+					</gmd:deliveryPoint>
 					{% endif %}
 					{% if contact.city is not none %}
 					<gmd:city>
 						<gco:CharacterString>{{ contact.city }}</gco:CharacterString>
 					</gmd:city>
 					{% endif %}
-					{% if contact.country is not none %}
-					<gmd:country>
-						<gco:CharacterString>{{ contact.country }}</gco:CharacterString>
-					</gmd:country>
-					{% endif %}
-					{% if contact.address is not none %}
-					<gmd:deliveryPoint>
-						<gco:CharacterString>{{ contact.address }}</gco:CharacterString>
-					</gmd:deliveryPoint>
+					{% if contact.region is not none %}
+					<gmd:administrativeArea>
+						<gco:CharacterString>{{ contact.region }}</gco:CharacterString>
+					</gmd:administrativeArea>
 					{% endif %}
 					{% if contact.postcode is not none %}
 					<gmd:postalCode>
 						<gco:CharacterString>{{ contact.postcode }}</gco:CharacterString>
 					</gmd:postalCode>
+					{% endif %}
+					{% if contact.country is not none %}
+					<gmd:country>
+						<gco:CharacterString>{{ contact.country }}</gco:CharacterString>
+					</gmd:country>
 					{% endif %}
 					{% if contact.email is not none %}
 					<gmd:electronicMailAddress>

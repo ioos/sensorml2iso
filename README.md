@@ -38,12 +38,15 @@ Parameters:
 
 --response_formats : (Optional) Comma-separated list of SOS responseFormats to use in creating
      GetObservation download links for each observed parameter.
-     Eg. '--response_formats=application/json,application/zip; subtype=x-netcdf'.
+     Eg. "--response_formats='application/json,application/zip; subtype=x-netcdf'".
      Default: ['application/json', 'text/xml; subtype="om/1.0.0/profiles/ioos_sos/1.0"'].
 
 --output_dir : (Optional) Specify an output directory (relative to current working directory)
      to write ISO 19115-2 XML files to.  If omitted the default output directory will a subdirectory
      using the domain name of the SOS service URL passed (eg. sos.gliders.ioos.us).
+
+--sos_type: (Optional) Identify the type of SOS service to query.  Currently this isn't implemented,
+    but could be used to use specific parsers built into the Pyoos library.  Valid types: 'ioos', 'ndbc', 'coops'. 
 
 --verbose : (Optional) verbose output to stdout and log file sensorml2iso.log
 ```
