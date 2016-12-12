@@ -73,8 +73,8 @@ class Sensorml2Iso:
         'text/xml;subtype="om/1.0.0/profiles/ioos_sos/1.0"': 'XML (IOOS SOS v1.0 Profile)',
         'text/csv': 'CSV',
         'text/tab-separated-values': 'TSV (tab-separated-values)',
-        'text/xml;schema="ioos/0.6.1"': 'XML (IOOS SOS v0.6.1)',
-        'application/ioos+xml;version=0.6.1': 'XML (IOOS SOS v0.6.1)'
+        'text/xml;schema="ioos/0.6.1"': 'XML (IOOS DIF SOS v0.6.1)',
+        'application/ioos+xml;version=0.6.1': 'XML (IOOS DIF SOS v0.6.1)'
     }
 
     def __init__(self, service=None, active_station_days=None, stations=None, getobs_req_hours=None, response_formats=None, sos_type=None, output_dir=None, verbose=False):
