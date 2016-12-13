@@ -4,7 +4,7 @@ kwargs = {
     'name': 'sensorml2iso',
     'author': 'Micah Wengren',
     'author_email': 'micah.wengren@gmail.com',
-    'url': 'https://github.com/mwengren/sensorml2iso',
+    'url': 'https://github.com/ioos/sensorml2iso',
     'description': 'A small utility to convert IOOS SOS SensorML to ISO19115-2 for IOOS Catalog',
     'entry_points': {
         'console_scripts': [
