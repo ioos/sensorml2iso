@@ -97,7 +97,6 @@ This station provides the following variables: {{ variables | replace("_", " ") 
 			</gmd:resourceMaintenance>
 			<gmd:descriptiveKeywords xlink:title="ISO Theme">
 				<gmd:MD_Keywords>
-					<!-- add keywords to template -->
 					{% for keyword in keywords %}
 					<gmd:keyword>
 						<gco:CharacterString>{{ keyword }}</gco:CharacterString>

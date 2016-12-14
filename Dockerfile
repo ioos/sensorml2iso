@@ -31,8 +31,7 @@ RUN conda install --file /usr/lib/sensorml2iso/requirements.txt && \
     conda clean --all --yes && \
     pip install --upgrade pip
 
-RUN pip install --upgrade "git+git://github.com/ioos/pyoos.git@842a9ad1d10c4823024a7f89af4fbd70d9218ca0#egg=pyoos" && \
-    pip install -e /usr/lib/sensorml2iso
+RUN pip install -e /usr/lib/sensorml2iso
 
 RUN mkdir -p /srv/iso && \
     chmod 777 /srv/iso
@@ -42,4 +41,3 @@ COPY ./contrib/init /etc/my_init.d
 VOLUME /srv/iso
 
 CMD ["/sbin/my_init"]
-

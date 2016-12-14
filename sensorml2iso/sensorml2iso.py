@@ -61,6 +61,7 @@ class Sensorml2Iso:
         'application/zip; subtype=x-netcdf': 'application/x-netcdf',
         'text/xml; subtype="om/1.0.0"': 'text/xml',
         'text/xml; subtype="om/1.0.0/profiles/ioos_sos/1.0"': 'text/xml',
+        'text/xml;subtype="om/1.0.0/profiles/ioos_sos/1.0"': 'text/xml',
         'text/xml;schema="ioos/0.6.1"': 'text/xml',
         'application/ioos+xml;version=0.6.1': 'text/xml'
     }
@@ -68,11 +69,12 @@ class Sensorml2Iso:
         'application/json': 'JSON',
         'application/zip; subtype=x-netcdf': 'NetCDF',
         'text/xml; subtype="om/1.0.0"': 'XML (O&M 1.0)',
-        'text/xml; subtype="om/1.0.0/profiles/ioos_sos/1.0"': 'XML (IOOS SOS 1.0 Profile)',
+        'text/xml; subtype="om/1.0.0/profiles/ioos_sos/1.0"': 'XML (IOOS SOS v1.0 Profile)',
+        'text/xml;subtype="om/1.0.0/profiles/ioos_sos/1.0"': 'XML (IOOS SOS v1.0 Profile)',
         'text/csv': 'CSV',
-        'text/tab-separated-values': 'CSV (Tab Separated)',
-        'text/xml;schema="ioos/0.6.1"': 'XML',
-        'application/ioos+xml;version=0.6.1': 'XML'
+        'text/tab-separated-values': 'TSV (tab-separated-values)',
+        'text/xml;schema="ioos/0.6.1"': 'XML (IOOS DIF SOS v0.6.1)',
+        'application/ioos+xml;version=0.6.1': 'XML (IOOS DIF SOS v0.6.1)'
     }
 
     def __init__(self, service=None, active_station_days=None, stations=None, getobs_req_hours=None, response_formats=None, sos_type=None, output_dir=None, verbose=False):
@@ -187,7 +189,6 @@ class Sensorml2Iso:
         oFrmts = ['text/xml; subtype="sensorML/1.0.1/profiles/ioos_sos/1.0"', 'text/xml;subtype="sensorML/1.0.1"']
         params = {'service': 'SOS', 'request': 'GetCapabilities', 'acceptVersions': '1.0.0'}
         sos_url_params = sos_url + '?' + urlencode(params)
-        sos_url_params_esc = sos_url_params.replace("&", "&amp;")
         # sos_url_params_quoted = quote(sos_url_params,"/=:")
         # sos_url_params_unquoted = unquote(sos_url_params)
 
@@ -330,7 +331,7 @@ class Sensorml2Iso:
                 begin_service_date = datetime.now(pytz.utc)
 
             station['station_urn'] = station_urn
-            station['sos_url'] = sos_url_params_esc
+            station['sos_url'] = sos_url_params
             station['describesensor_url'] = describe_sensor_url[station_urn]
 
             station['shortName'] = ds.shortName
@@ -428,16 +429,15 @@ class Sensorml2Iso:
                     getobs_params['responseFormat'] = format
                     getobs_request_url_encoded = sos_url + '?' + urlencode(getobs_params)
                     getobs_request_url = unquote(getobs_request_url_encoded)
-                    getobs_request_url_esc = getobs_request_url.replace("&", "&amp;")
                     getobs_req_dct[variable + '-' + format] = {
                         'variable': variable,
-                        'url': getobs_request_url_esc,
+                        'url': getobs_request_url,
                         'format_type': self.RESPONSE_FORMAT_TYPE_MAP.get(format, format),
                         'format_name': self.RESPONSE_FORMAT_NAME_MAP.get(format, format)
                     }
                     if self.verbose:
-                        self.log.write(u"\ngetobs_request_url (var: {variable}): {getobs_request_url}\ngetobs_request_url_esc (var: {variable}): {getobs_request_url_esc}".format(variable=variable.split("/")[-1], getobs_request_url=getobs_request_url, getobs_request_url_esc=getobs_request_url_esc))
-                        print("getobs_request_url (var: {variable}): {getobs_request_url}\ngetobs_request_url_esc (var: {variable}): {getobs_request_url_esc}".format(variable=variable.split("/")[-1], getobs_request_url=getobs_request_url, getobs_request_url_esc=getobs_request_url_esc))
+                        self.log.write(u"\ngetobs_request_url (var: {variable}): {getobs_request_url}".format(variable=variable.split("/")[-1], getobs_request_url=getobs_request_url))
+                        print("getobs_request_url (var: {variable}): {getobs_request_url}".format(variable=variable.split("/")[-1], getobs_request_url=getobs_request_url))
 
             # ToDo: finish adding the 'getobs_req_dct' to the output template
             station['getobs_req_dct'] = getobs_req_dct
@@ -468,7 +468,7 @@ class Sensorml2Iso:
         """
 
         # set up the Jinja2 template:
-        env = Environment(loader=PackageLoader('sensorml2iso', 'templates'), trim_blocks=True, lstrip_blocks=True)
+        env = Environment(loader=PackageLoader('sensorml2iso', 'templates'), trim_blocks=True, lstrip_blocks=True, autoescape=True)
         # env.filters['sixiteritems'] = six.iteritems
         template = env.get_template('sensorml_iso.xml')
 
@@ -546,7 +546,7 @@ class Sensorml2Iso:
         if not base_url.endswith("?"):
                 base_url = base_url + "?"
         params = {'service': 'SOS', 'version': sos.version, 'request': 'DescribeSensor', 'procedure': procedure, 'outputFormat': oFrmt}
-        return base_url + unquote_plus(urlencode(params)).replace("&", "&amp;")
+        return base_url + unquote_plus(urlencode(params))
 
     def create_output_dir(self):
         """
