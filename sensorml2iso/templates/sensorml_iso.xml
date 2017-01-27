@@ -56,9 +56,14 @@
 							</gmd:dateType>
 						</gmd:CI_Date>
 					</gmd:date>
-					<gmd:citedResponsibleParty xlink:title="contacts_dct.publisher.organization">
+					<gmd:citedResponsibleParty xlink:title="{{ contacts_dct.publisher.organization }}">
 						{{ CI_ResponsibleParty(contacts_dct.publisher) }}
 					</gmd:citedResponsibleParty>
+					{% if 'operator' in contacts_dct %}
+					<gmd:citedResponsibleParty xlink:title="{{ contacts_dct.operator.organization }}">
+						{{ CI_ResponsibleParty(contacts_dct.operator, 'originator') }}
+					</gmd:citedResponsibleParty>
+					{% endif %}
 					<gmd:presentationForm>
 						<gmd:CI_PresentationFormCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_PresentationFormCode" codeListValue="modelDigital">modelDigital</gmd:CI_PresentationFormCode>
 					</gmd:presentationForm>
@@ -85,7 +90,7 @@ This station provides the following variables: {{ variables | replace("_", " ") 
 			<gmd:status>
 				<gmd:MD_ProgressCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_ProgressCode" codeListValue="onGoing">onGoing</gmd:MD_ProgressCode>
 			</gmd:status>
-			<gmd:pointOfContact xlink:title="contacts_dct.publisher.organization">
+			<gmd:pointOfContact xlink:title="{{ contacts_dct.publisher.organization }}">
 				{{ CI_ResponsibleParty(contacts_dct.publisher, 'pointOfContact') }}
 			</gmd:pointOfContact>
 			<gmd:resourceMaintenance>
@@ -183,7 +188,7 @@ This station provides the following variables: {{ variables | replace("_", " ") 
 								 </gmd:CI_Date>
 							</gmd:date>
 							{% endif %}
-							<gmd:citedResponsibleParty>
+							<gmd:citedResponsibleParty xlink:title="{{ contacts_dct.publisher.organization }}">
 								{{ CI_ResponsibleParty(contacts_dct.publisher) }}
 							</gmd:citedResponsibleParty>
 					 </gmd:CI_Citation>
@@ -287,6 +292,9 @@ This station provides the following variables: {% for variable in variables %}{{
 						<gco:CharacterString>{{ format }}</gco:CharacterString>
 					</gmd:name>
 					<gmd:version gco:nilReason="unknown"/>
+					<gmd:specification>
+						<gco:CharacterString>{{ format }}</gco:CharacterString>
+					</gmd:specification>
 				</gmd:MD_Format>
 			</gmd:distributionFormat>
 			{% endfor %}
