@@ -2,5 +2,4 @@ Dockerfile
 .dockerignore
 .git
 .gitignore
-README.md
 *.egg-info

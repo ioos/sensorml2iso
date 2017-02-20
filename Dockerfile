@@ -1,24 +1,43 @@
-FROM python:3.5
+FROM phusion/baseimage:0.9.18
 
-RUN apt-get update && apt-get install -y --no-install-recommends libgeos-dev \
-      && rm -rf /var/lib/apt/lists/*
+MAINTAINER Luke Campbell <luke.campbell@rpsgroup.com>
 
-RUN mkdir -p /srv/app /srv/iso
+# General dependencies:
+RUN apt-get update && \
+    apt-get install -y wget git build-essential && \
+    rm -rf /var/lib/apt/lists/*
 
-WORKDIR /srv/app
+# Install conda/python
+RUN echo 'export PATH=/opt/conda/bin:$PATH' > /etc/profile.d/conda.sh && \
+    wget --quiet https://repo.continuum.io/miniconda/Miniconda3-4.0.5-Linux-x86_64.sh -O ~/miniconda.sh && \
+    /bin/bash ~/miniconda.sh -b -p /opt/conda && \
+    rm ~/miniconda.sh && \
+    export PATH="/opt/conda/bin:${PATH}" && \
+    conda config --set always_yes yes --set changeps1 no && \
+    conda config --set show_channel_urls True && \
+    conda config --add create_default_packages pip && \
+    echo 'conda 4.0.*' >> /opt/conda/conda-meta/pinned && \
+    conda update conda && \
+    conda config --add channels conda-forge && \
+    conda clean --all --yes
 
-COPY requirements.txt .
+ENV PATH=/opt/conda/bin:$PATH
 
-RUN pip install --upgrade pip && pip install -r requirements.txt
+COPY sensorml2iso /usr/lib/sensorml2iso/sensorml2iso
+COPY LICENSE README.md requirements.txt setup.py /usr/lib/sensorml2iso/
 
-COPY . .
+RUN useradd -m harvester
+RUN conda install --file /usr/lib/sensorml2iso/requirements.txt && \
+    conda clean --all --yes && \
+    pip install --upgrade pip
 
-RUN pip install -e .
+RUN pip install -e /usr/lib/sensorml2iso
 
-#Add app user
-RUN useradd --system --home-dir=/srv/app app \
-      && chown -R app:app /srv/app /srv/iso
+RUN mkdir -p /srv/iso && \
+    chmod 777 /srv/iso
+
+COPY ./contrib/init /etc/my_init.d
 
 VOLUME /srv/iso
 
-ENTRYPOINT ["sensorml2iso", "--output_dir", "/srv/iso"]
+CMD ["/sbin/my_init"]
