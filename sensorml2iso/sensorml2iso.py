@@ -130,6 +130,10 @@ class Sensorml2Iso:
         # obtain the stations DataFrame:
         stations_df = self.get_stations_df(self.service, self.stations)
 
+        if stations_df is None:
+            self.log.write(u"\nNo valid SensorML documents obtained from SOS serivce.  Verify service is compliant with the SOS profile [URL: {url}]".format(url=self.service))
+            sys.exit("No valed SensorML documents obtained from SOS serivce.  Verify service is compliant with the SOS profile [URL: {url}]".format(url=self.service))
+
         # Assign EPSG:4326 CRS, retrieved from epsg.io
         # The OGC WKT crs string is available directly at http://epsg.io/4326.wkt
         # or http://spatialreference.org/ref/epsg/4326/ogcwkt/
@@ -154,9 +158,9 @@ class Sensorml2Iso:
                 print("Date for determining active/inactive stations in SOS service: {active_date:%Y-%m-%d}".format(active_date=station_active_date))
                 print("'Active' stations: %d / Total stations: %d" % (active_cnt, total_cnt))
                 print("DataFrame sizes: Original(stations_df): {len_stations_df:2.0f}, Filtered: {len_filtered_stations_df:2.0f}".format(len_stations_df=len(stations_df), len_filtered_stations_df=len(filtered_stations_df)))
-                self.log.write(u"Date for determining active/inactive stations in SOS service: {active_date:%Y-%m-%d}".format(active_date=station_active_date))
-                self.log.write(u"'Active' stations: %d / Total stations: %d" % (active_cnt, total_cnt))
-                self.log.write(u"DataFrame sizes: Original(stations_df): {len_stations_df:2.0f}, Filtered: {len_filtered_stations_df:2.0f}".format(len_stations_df=len(stations_df), len_filtered_stations_df=len(filtered_stations_df)))
+                self.log.write(u"\nDate for determining active/inactive stations in SOS service: {active_date:%Y-%m-%d}".format(active_date=station_active_date))
+                self.log.write(u"\n'Active' stations: %d / Total stations: %d" % (active_cnt, total_cnt))
+                self.log.write(u"\nDataFrame sizes: Original(stations_df): {len_stations_df:2.0f}, Filtered: {len_filtered_stations_df:2.0f}".format(len_stations_df=len(stations_df), len_filtered_stations_df=len(filtered_stations_df)))
 
             if self.verbose:
                 # self.csv.write(unicode(stations_df[stations_df.ending > station_active_date.isoformat()].to_csv(encoding='utf-8')))
@@ -195,9 +199,9 @@ class Sensorml2Iso:
         try:
             sosgc = SensorObservationService(sos_url_params)
         except (ConnectionError, ReadTimeout) as e:
-            self.log.write(u"Error: unable to connect to SOS service: {url} due to HTTP connection error.\n".format(url=sos_url_params))
-            self.log.write(u"HTTP connection error: {err}.\n".format(err=str(e)))
-            sys.exit("Error: unable to connect to SOS service: {url}. \nUnderlying HTTP connection error: {err}\n".format(url=sos_url_params, err=str(e)))
+            self.log.write(u"\nError: unable to connect to SOS service: {url} due to HTTP connection error.".format(url=sos_url_params))
+            self.log.write(u"\nHTTP connection error: {err}.".format(err=str(e)))
+            sys.exit("\nError: unable to connect to SOS service: {url}. \nUnderlying HTTP connection error: {err}".format(url=sos_url_params, err=str(e)))
 
         # vars to store returns from sos_collector.metadata_plus_exceptions function:
         sml_recs = {}
@@ -317,6 +321,13 @@ class Sensorml2Iso:
                 contact = Contact(c)
                 role = contact.role.split('/')[-1]
                 contacts_dct[role] = contact
+
+            # verify a 'publisher' Contact exists (template expects one):
+            if "publisher" not in contacts_dct.keys():
+                self.log.write(u"\n\nStation: {station} skipped.  No \'http://mmisw.org/ont/ioos/definition/publisher\' Contact role defined in SensorML as required.  Roles defined: [{roles}]".format(station=station_urn, roles=", ".join(contacts_dct.keys())))
+                print("Station: {station} skipped.  No \'http://mmisw.org/ont/ioos/definition/publisher\' Contact role defined in SensorML as required.  Roles defined: [{roles}]".format(station=station_urn, roles=", ".join(contacts_dct.keys())))
+                failures.append(station_urn)
+                continue
 
             sweQuants = system_el.findall(self.nsp('sml:outputs/sml:OutputList/sml:output/swe:Quantity'))
             quant_lst = [sweQuant.attrib['definition'] for sweQuant in sweQuants]
@@ -458,10 +469,12 @@ class Sensorml2Iso:
                     self.log.write(u"\n{station}".format(station=station_fail))
                     print("{station}".format(station=station_fail))
 
-        stations_df = pd.DataFrame.from_records(station_recs, columns=station.keys())
-        stations_df.index = stations_df['station_urn']
-
-        return stations_df
+        if station_recs:
+            stations_df = pd.DataFrame.from_records(station_recs, columns=station.keys())
+            stations_df.index = stations_df['station_urn']
+            return stations_df
+        else:
+            return None
 
     def generate_iso(self, df):
         """
@@ -469,7 +482,6 @@ class Sensorml2Iso:
 
         # set up the Jinja2 template:
         env = Environment(loader=PackageLoader('sensorml2iso', 'templates'), trim_blocks=True, lstrip_blocks=True, autoescape=True)
-        # env.filters['sixiteritems'] = six.iteritems
         template = env.get_template('sensorml_iso.xml')
 
         for idx, station in df.iterrows():
