@@ -37,6 +37,7 @@ RUN mkdir -p /srv/iso && \
     chmod 777 /srv/iso
 
 COPY ./contrib/init /etc/my_init.d
+COPY ./contrib/config/config.json /etc/sensorml2iso/config.json
 
 VOLUME /srv/iso
 
