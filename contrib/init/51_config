@@ -48,7 +48,7 @@ def generate_cron_string(config_entry):
     Returns a line to be inserted into the crontab
     '''
     args = generate_args(config_entry)
-    cron_line = '{schedule} harvester /opt/conda/bin/sensorml2iso {args} {redirect}'
+    cron_line = '{schedule} app sensorml2iso {args} {redirect}'
     redirect = '2>&1 | /usr/bin/logger -t sensorml2iso'
     schedule = config_entry['schedule']
 
