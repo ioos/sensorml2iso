@@ -1,9 +1,0 @@
-#!/bin/bash
-
-set -eu
-
-: ${CRON_STRING:=0 * * *}
-
-echo 'PATH=/opt/conda/bin:$PATH' > /etc/crontab
-echo "${CRON_STRING} harvester /opt/conda/bin/sensorml2iso -s http://sdf.ndbc.noaa.gov/sos/server.php --verbose --response_formats='text/csv,text/xml;schema=\"ioos/0.6.1\"'  --output_dir=/srv/iso/ndbc 2>&1 | /usr/bin/logger -t sensorml2iso" >> /etc/crontab
-echo "${CRON_STRING} harvester /opt/conda/bin/sensorml2iso -s http://opendap.co-ops.nos.noaa.gov/ioos-dif-sos/SOS --verbose --response_formats='text/csv,text/xml;subtype=\"om/1.0.0/profiles/ioos_sos/1.0\"' --output_dir=/srv/iso/co-ops 2>&1 | /usr/bin/logger -t sensorml2iso" >> /etc/crontab
