@@ -41,7 +41,7 @@ kwargs = {
         "pyoos>=0.8.2",
         "shapely>=1.5.16"
     ],
-    "version": "0.1.0",
+    "version": "1.0.1",
 }
 
 setup(**kwargs)
