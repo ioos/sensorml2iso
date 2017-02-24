@@ -91,4 +91,5 @@ ENV/
 
 # Rope project settings
 .ropeproject
+# Vim
 *.swp
