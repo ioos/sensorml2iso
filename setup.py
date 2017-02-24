@@ -1,5 +1,9 @@
 from setuptools import setup
 
+
+reqs = [line.strip() for line in open('requirements.txt')]
+
+
 kwargs = {
     "name": "sensorml2iso",
     "author": "Micah Wengren",
@@ -30,18 +34,14 @@ kwargs = {
             "*.xml"
         ]
     },
-    "install_requires": [
-        "OWSLib>=0.11.0",
-        "flake8>=2.5.1",
-        "geopandas>=0.2.1",
-        "jinja2>=2.7",
-        "lxml>=3.5.0",
-        "numpy>=1.11.2",
-        "pandas>=0.19.0",
-        "pyoos>=0.8.2",
-        "shapely>=1.5.16"
-    ],
     "version": "1.0.1",
 }
+
+
+# It was kind of convenient to keep kwargs as a fully compliant JSON structure so I'll move install requires below it
+
+
+kwargs['install_requires'] = reqs
+
 
 setup(**kwargs)
