@@ -50,3 +50,48 @@ Parameters:
 
 --verbose : (Optional) verbose output to stdout and log file sensorml2iso.log
 ```
+
+
+#### Docker 
+
+To run the command using docker:
+
+```
+docker run -v $PWD/iso:/srv/iso --name sensorml2iso -it --rm ioos/sensorml2iso -s http://sos.glos.us/52n/sos/kvp --output_dir /srv/iso/glos
+```
+
+To run the container as a service:
+
+Example config.json:
+
+```json
+[
+    {
+        "service": "http://sdf.ndbc.noaa.gov/sos/server.php",
+        "output_dir": "/srv/iso/ndbc",
+        "response_formats": [
+            "text/csv",
+            "text/xml;schema=\"ioos/0.6.1\""
+        ],
+        "schedule": "0 * * * *"
+    },
+    {
+        "service": "http://opendap.co-ops.nos.noaa.gov/ioos-dif-sos/SOS",
+        "output_dir": "/srv/iso/co-ops",
+        "response_formats": [
+            "text/csv",
+            "text/xml;subtype=\"om/1.0.0/profiles/ioos_sos/1.0\""
+        ],
+        "schedule": "10 * * * *"
+    },
+    {
+        "service": "http://sos.glos.us/52n/sos/kvp",
+        "output_dir": "/srv/iso/glos",
+        "schedule": "20 * * * *"
+    }
+]
+```
+
+```
+docker run --name sensorml2iso -it -v $PWD/config.json:/etc/sensorml2iso/config.json ioos/sensorml2iso
+```

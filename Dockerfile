@@ -1,24 +1,32 @@
 FROM python:3.5
 
-RUN apt-get update && apt-get install -y --no-install-recommends libgeos-dev \
-      && rm -rf /var/lib/apt/lists/*
+MAINTAINER Luke Campbell <luke.campbell@rpsgroup.com>
+
+# General dependencies:
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends libgeos-dev && \
+    apt-get install -y cron rsyslog && \
+    rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p /srv/app /srv/iso
 
 WORKDIR /srv/app
 
-COPY requirements.txt .
+COPY setup.py requirements.txt ./
 
 RUN pip install --upgrade pip && pip install -r requirements.txt
 
-COPY . .
+COPY setup.py contrib/docker-entrypoint.sh ./
+COPY sensorml2iso ./sensorml2iso
+COPY contrib/init /etc/my_init.d
+COPY contrib/bin/setuser /sbin/setuser
+COPY contrib/config/config.json /etc/sensorml2iso/config.json
 
-RUN pip install -e .
-
-#Add app user
-RUN useradd --system --home-dir=/srv/app app \
-      && chown -R app:app /srv/app /srv/iso
+RUN touch /var/log/cron.log && \
+    pip install -e . && \
+    useradd --system --home-dir=/srv/app app && \
+    chown -R app:app /srv/app /srv/iso
 
 VOLUME /srv/iso
 
-ENTRYPOINT ["sensorml2iso", "--output_dir", "/srv/iso"]
+ENTRYPOINT ["./docker-entrypoint.sh"]

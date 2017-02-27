@@ -1,0 +1,21 @@
+[
+    {
+        "service": "http://sdf.ndbc.noaa.gov/sos/server.php",
+        "output_dir": "/srv/iso/ndbc",
+        "response_formats": [
+            "text/csv",
+            "text/xml;schema=\"ioos/0.6.1\""
+        ],
+        "schedule": "0 * * * *"
+    },
+    {
+        "service": "http://opendap.co-ops.nos.noaa.gov/ioos-dif-sos/SOS",
+        "output_dir": "/srv/iso/co-ops",
+        "response_formats": [
+            "text/csv",
+            "text/xml;subtype=\"om/1.0.0/profiles/ioos_sos/1.0\""
+        ],
+        "schedule": "0 * * * *"
+    }
+]
+

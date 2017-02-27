@@ -1,0 +1,76 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+import json
+import os
+import sys
+
+
+def generate_args(config_entry):
+    '''
+    Returns the command line arguments to execute for a given entry
+    :params dict config_entry: Configuration for the consumer
+    '''
+    args = []
+    if 'service' in config_entry:
+        args.extend(['-s', '"{}"'.format(config_entry['service'])])
+
+    if 'active_station_days' in config_entry:
+        args.append('-d')
+        args.append('{}'.format(config_entry['active_station_days']))
+
+    if 'stations' in config_entry:
+        args.append('--stations')
+        args.append('"{}"'.format(','.join(config_entry['stations'])))
+
+    if 'getobs_req_hours' in config_entry:
+        args.append('--getobs_req_hours')
+        args.append('{}'.format(config_entry['getobs_req_hours']))
+
+    if 'response_formats' in config_entry:
+        args.append('--response_formats')
+        args.append('"{}"'.format(','.join(config_entry['response_formats'])))
+
+    if 'output_dir' in config_entry:
+        args.append('--output_dir')
+        args.append('"{}"'.format(config_entry['output_dir']))
+
+    if 'sos_type' in config_entry:
+        args.append('--sos_type')
+        args.append(config_entry['sos_type'])
+
+    args.append('--verbose')
+    return ' '.join(args)
+
+
+def generate_cron_string(config_entry):
+    '''
+    Returns a line to be inserted into the crontab
+    '''
+    args = generate_args(config_entry)
+    cron_line = '{schedule} app sensorml2iso {args} {redirect}'
+    redirect = '2>&1 | /usr/bin/logger -t sensorml2iso'
+    schedule = config_entry['schedule']
+
+    return cron_line.format(schedule=schedule,
+                            args=args,
+                            redirect=redirect)
+
+
+def main():
+    if not os.path.exists('/etc/sensorml2iso/config.json'):
+        return 0
+
+    with open('/etc/sensorml2iso/config.json', 'r') as f:
+        config = json.load(f)
+
+    with open('/etc/crontab', 'a') as f:
+        for line in config:
+            cron_line = generate_cron_string(line)
+            f.write(cron_line)
+            f.write('\n')
+
+
+if __name__ == '__main__':
+    sys.exit(main())
+
