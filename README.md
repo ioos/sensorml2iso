@@ -7,7 +7,7 @@ output ISO 19115-2-compliant xml metadata following a template.
 ```
 git clone https://github.com/ioos/sensorml2iso.git
 cd sensorml2iso
-pip install -e .
+python setup.py install
 ```
 
 #### Usage: ####
@@ -46,13 +46,13 @@ Parameters:
      using the domain name of the SOS service URL passed (eg. sos.gliders.ioos.us).
 
 --sos_type: (Optional) Identify the type of SOS service to query.  Currently this isn't implemented,
-    but could be used to use specific parsers built into the Pyoos library.  Valid types: 'ioos', 'ndbc', 'coops'. 
+    but could be used to use specific parsers built into the Pyoos library.  Valid types: 'ioos', 'ndbc', 'coops'.
 
 --verbose : (Optional) verbose output to stdout and log file sensorml2iso.log
 ```
 
 
-#### Docker 
+#### Docker
 
 To run the command using docker:
 
