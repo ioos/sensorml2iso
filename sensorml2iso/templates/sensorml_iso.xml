@@ -300,7 +300,7 @@ This station provides the following variables: {% for variable in variables %}{{
 			{% endfor %}
 			<gmd:distributor>
 				<gmd:MD_Distributor>
-					<gmd:distributorContact xlink:title="contacts_dct.publisher.organization">
+					<gmd:distributorContact xlink:title="{{ contacts_dct.publisher.organization }}">
 							{{ CI_ResponsibleParty(contacts_dct.publisher, 'distributor') }}
 					</gmd:distributorContact>
 				</gmd:MD_Distributor>
