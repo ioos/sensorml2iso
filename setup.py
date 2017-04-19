@@ -30,8 +30,8 @@ kwargs = {
     ],
     "packages": ["sensorml2iso"],
     "package_data": {
-        "templates": [
-            "*.xml"
+        "sensorml2iso": [
+            "templates/*.xml"
         ]
     },
     "version": "1.0.2",
