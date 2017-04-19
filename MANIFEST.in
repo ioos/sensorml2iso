@@ -1,0 +1,5 @@
+include *.txt
+include README.md
+include LICENSE
+recursive-include sensorml2iso *.py
+include sensorml2iso/templates/*.xml
