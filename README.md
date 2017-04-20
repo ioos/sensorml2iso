@@ -3,6 +3,8 @@
 A simple Python module to query an IOOS SOS service for active sensors and
 output ISO 19115-2-compliant xml metadata following a template.
 
+Preliminary SensorML parsing code adapted for this module credit: [NANOOS](https://github.com/nanoos-pnw/).
+
 #### Installation: ####
 ```
 git clone https://github.com/ioos/sensorml2iso.git
