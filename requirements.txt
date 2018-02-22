@@ -4,5 +4,5 @@ jinja2
 lxml
 numpy
 pandas
-pyoos
+pyoos >=0.8.3
 shapely
