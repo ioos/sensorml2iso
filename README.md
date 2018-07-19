@@ -23,7 +23,7 @@ sensorml2iso -s http://data.nanoos.org/52nsos/sos/kvp
 or, with all optional parameters:
 ```
 sensorml2iso -s http://data.nanoos.org/52nsos/sos/kvp -d 14 --stations=urn:ioos:station:nanoos:apl_nemo,urn:ioos:station:nanoos:apl_npb1ptwells
-                    --getobs_req_hours 3 --response_formats=application/json,application/zip; subtype=x-netcdf --output_dir data.nanoos.org --verbose
+                    --getobs_req_hours 3 --response_formats='application/json,application/zip; subtype=x-netcdf' --output_dir data.nanoos.org --verbose
 ```
 
 Parameters:
@@ -78,6 +78,7 @@ Example config.json:
             "text/csv",
             "text/xml;schema=\"ioos/0.6.1\""
         ],
+        "verbose": false,
         "schedule": "0 * * * *"
     },
     {
@@ -87,11 +88,13 @@ Example config.json:
             "text/csv",
             "text/xml;subtype=\"om/1.0.0/profiles/ioos_sos/1.0\""
         ],
+        "verbose": false,
         "schedule": "10 * * * *"
     },
     {
         "service": "http://sos.glos.us/52n/sos/kvp",
         "output_dir": "/srv/iso/glos",
+        "verbose": false,
         "schedule": "20 * * * *"
     }
 ]
