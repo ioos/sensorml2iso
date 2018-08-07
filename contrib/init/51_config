@@ -39,8 +39,7 @@ def generate_args(config_entry):
         args.append('--sos_type')
         args.append(config_entry['sos_type'])
 
-    if 'verbose' in config_entry:
-        if config_entry['verbose'] == True:
+    if config_entry.get('verbose') == True:
             args.append('--verbose')
 
     return ' '.join(args)
