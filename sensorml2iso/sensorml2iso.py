@@ -18,8 +18,6 @@ from requests.exceptions import ConnectionError, ReadTimeout
 
 # import numpy as np
 import pandas as pd
-# from shapely.geometry import Point
-# import geopandas as gpd
 
 from owslib.sos import SensorObservationService
 from owslib.swe.sensor.sml import SensorML, Contact, Documentation
@@ -77,7 +75,8 @@ class Sensorml2Iso:
         'application/ioos+xml;version=0.6.1': 'XML (IOOS DIF SOS v0.6.1)'
     }
 
-    def __init__(self, service=None, active_station_days=None, stations=None, getobs_req_hours=None, response_formats=None, sos_type=None, output_dir=None, verbose=False):
+    def __init__(self, service=None, active_station_days=None, stations=None, getobs_req_hours=None,
+                 response_formats=None, sos_type=None, output_dir=None, verbose=False):
         """
         """
 
@@ -134,19 +133,6 @@ class Sensorml2Iso:
             self.log.write(u"\nNo valid SensorML documents obtained from SOS serivce.  Verify service is compliant with the SOS profile [URL: {url}]".format(url=self.service))
             sys.exit("No valed SensorML documents obtained from SOS serivce.  Verify service is compliant with the SOS profile [URL: {url}]".format(url=self.service))
 
-        # Assign EPSG:4326 CRS, retrieved from epsg.io
-        # The OGC WKT crs string is available directly at http://epsg.io/4326.wkt
-        # or http://spatialreference.org/ref/epsg/4326/ogcwkt/
-        # crs = '''GEOGCS["WGS 84",
-        #           DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],
-        #             AUTHORITY["EPSG","6326"]],
-        #           PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],
-        #           UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],
-        #         AUTHORITY["EPSG","4326"]]'
-        # '''
-        # geometry = [Point(xy) for xy in zip(stations_df.lon, stations_df.lat)]
-        # self.stations_gdf = gpd.GeoDataFrame(stations_df, geometry=geometry, crs=crs)
-
         # determine active/inactive stations (--active_station_days parameter if provided) and filter stations_df accordingly:
         if self.active_station_days is not None:
             station_active_date = datetime.now() - timedelta(days=self.active_station_days)
@@ -188,7 +174,8 @@ class Sensorml2Iso:
     def get_stations_df(self, sos_url, station_urns_sel=None):
         """ Returns a Pandas Dataframe
         """
-        # oFrmts: IOOS SOS OutputFormat strings (first is compliant to the IOOS SOS spec, second is to accommodate NDBC).  More info here:
+        # oFrmts: IOOS SOS OutputFormat strings (first is compliant to the IOOS SOS spec,
+        # second is to accommodate NDBC).  More info here:
         # http://ioos.github.io/sos-guidelines/doc/wsdd/sos_wsdd_github_notoc/#describesensor-request:638e0b263020c13a76a55332bd966dbe
         oFrmts = ['text/xml; subtype="sensorML/1.0.1/profiles/ioos_sos/1.0"', 'text/xml;subtype="sensorML/1.0.1"']
         params = {'service': 'SOS', 'request': 'GetCapabilities', 'acceptVersions': '1.0.0'}
@@ -208,7 +195,8 @@ class Sensorml2Iso:
         sml_errors = {}
         describe_sensor_url = {}
 
-        # leverage Pyoos Collector to query for all available stations and obtain SensorML (if station subset not passed in --stations param)
+        # leverage Pyoos Collector to query for all available stations and obtain SensorML
+        # (if station subset not passed in --stations param)
         if station_urns_sel is not None:
             station_urns = station_urns_sel
         else:
@@ -279,6 +267,12 @@ class Sensorml2Iso:
                     failures.append(station_urn)
                     continue
 
+            if self.sos_type.lower() == 'ndbc':
+                # later: add an error check
+                sosgc_station_offering = sosgc.contents['station-' + station_urn.split(':')[-1]]
+            else:
+                sosgc_station_offering = None
+
             try:
                 ds = IoosDescribeSensor(sml._root)
             except AttributeError:
@@ -294,7 +288,9 @@ class Sensorml2Iso:
 
             # assign 'pos' to GML point location (accommodate 'gml:coordinates' as used by NDBC if gml:Point not found):
             try:
-                pos = testXMLValue(ds.system.location.find(self.nsp('gml:Point/gml:pos'))) if testXMLValue(ds.system.location.find(self.nsp('gml:Point/gml:pos'))) is not None else testXMLValue(ds.system.location.find(self.nsp('gml:Point/gml:coordinates')))
+                pos = testXMLValue(ds.system.location.find(self.nsp('gml:Point/gml:pos'))) \
+                    if testXMLValue(ds.system.location.find(self.nsp('gml:Point/gml:pos'))) is not None \
+                    else testXMLValue(ds.system.location.find(self.nsp('gml:Point/gml:coordinates')))
                 station['lon'] = float(pos.split()[1])
                 station['lat'] = float(pos.split()[0])
             except AttributeError as e:
@@ -315,7 +311,9 @@ class Sensorml2Iso:
                 documents_dct[name] = document
 
             # obtain list of contacts (accommodate 'sml:contact' element repetition used by NDBC insead of  ContactList):
-            contacts = system_el.findall(self.nsp('sml:contact/sml:ContactList/sml:member')) if system_el.findall(self.nsp('sml:contact/sml:ContactList/sml:member')) else system_el.findall(self.nsp('sml:contact'))
+            contacts = system_el.findall(self.nsp('sml:contact/sml:ContactList/sml:member')) \
+                if system_el.findall(self.nsp('sml:contact/sml:ContactList/sml:member')) \
+                else system_el.findall(self.nsp('sml:contact'))
             contacts_dct = {}
             for c in contacts:
                 contact = Contact(c)
@@ -333,8 +331,8 @@ class Sensorml2Iso:
             quant_lst = [sweQuant.attrib['definition'] for sweQuant in sweQuants]
             parameter_lst = [sweQuant.split('/')[-1] for sweQuant in quant_lst]
 
-            # attempt to read beginPosition, if available, otherwise use current date bc ISO requires date value in output location
-            # in template:
+            # attempt to read beginPosition, if available, otherwise use current date
+            # bc ISO requires date value in output location in template:
             beginPosition = testXMLValue(system_el.find(self.nsp('sml:validTime/gml:TimePeriod/gml:beginPosition')))
             try:
                 begin_service_date = parser.parse(beginPosition)
@@ -347,7 +345,10 @@ class Sensorml2Iso:
 
             station['shortName'] = ds.shortName
             station['longName'] = ds.longName
-            station['wmoID'] = ds.get_ioos_def('wmoID', 'identifier', ont)
+            if self.sos_type.lower() == 'ndbc':
+                station['wmoID'] = station_urn.split(':')[-1]
+            else:
+                station['wmoID'] = ds.get_ioos_def('wmoID', 'identifier', ont)
             station['serverName'] = self.server_name
 
             # Some capabilities-level metadata:
@@ -362,21 +363,30 @@ class Sensorml2Iso:
             station['parentNetwork'] = ds.get_ioos_def('parentNetwork', 'classifier', ont)
             station['sponsor'] = ds.get_ioos_def('sponsor', 'classifier', ont)
 
-            # store some nested dictionaries in 'station' for appopriate SensorML sources:
+            # store some nested dictionaries in 'station' for appropriate SensorML sources:
             station['contacts_dct'] = contacts_dct
             station['documents_dct'] = documents_dct
 
-            station['starting'] = ds.starting
-            station['ending'] = ds.ending
-            # station['starting_isostr'] = datetime.isoformat(ds.starting)
-            # station['ending_isostr'] = datetime.isoformat(ds.ending)
+            if self.sos_type.lower() == 'ndbc' and sosgc_station_offering is not None:
+                station['starting'] = sosgc_station_offering.begin_position
+                station['ending'] = sosgc_station_offering.end_position
+            else:
+                station['starting'] = ds.starting
+                station['ending'] = ds.ending
 
-            station['parameter_uris'] = ','.join(quant_lst)
-            station['parameters'] = ','.join(parameter_lst)
-            station['variables'] = [var.split('/')[-1] for var in ds.variables]
+            if self.sos_type.lower() == 'ndbc' and sosgc_station_offering is not None:
+                station['variable_uris'] = sosgc_station_offering.observed_properties
+                station['variables'] = [var.split('/')[-1] for var in sosgc_station_offering.observed_properties]
+                station['parameter_uris'] = ','.join(station['variable_uris'])
+                station['parameters'] = ','.join(station['variables'])
+            else:
+                station['variable_uris'] = ds.variables
+                station['variables'] = [var.split('/')[-1] for var in ds.variables]
+                station['parameter_uris'] = ','.join(quant_lst)
+                station['parameters'] = ','.join(parameter_lst)
 
             if self.verbose:
-                for var in ds.variables:
+                for var in station['variable_uris']:
                     self.log.write(u"\nvariable: {var}".format(var=var))
                     print("variable: {var}".format(var=var))
 
@@ -390,12 +400,14 @@ class Sensorml2Iso:
             for id, sosgc.content in sosgc.contents.items():
                 if sosgc.content.name == station_urn:
                     response_formats = sosgc.content.response_formats
-            # response_formats = [ sosgc.content.response_formats for id, sosgc.content in sosgc.contents.items() if sosgc.content.name == station_urn ]
+            # response_formats = [ sosgc.content.response_formats for id, sosgc.content in sosgc.contents.items()
+            #                      if sosgc.content.name == station_urn ]
 
             # match responseFormats from SensorML (response_formats) against those passed in --response_formats parameter to
             # populate 'download_formats' list, that is then used to generate GetObservation requests for the template:
             # (default --response_formats values are: 'application/json,application/zip; subtype=x-netcdf' )
-            download_formats = [response_format for response_format in response_formats if response_format in self.response_formats]
+            download_formats = [response_format for response_format in response_formats
+                                if response_format in self.response_formats]
             station['response_formats'] = response_formats
             station['download_formats'] = download_formats
 
@@ -408,18 +420,23 @@ class Sensorml2Iso:
                     print("downloadFormats: {format}".format(format=format))
 
             # calculate event_time using self.getobs_req_hours:
-            if ds.starting is not None and ds.ending is not None:
-                event_time = "{begin:%Y-%m-%dT%H:%M:%S}/{end:%Y-%m-%dT%H:%M:%S}".format(begin=ds.ending - timedelta(hours=self.getobs_req_hours), end=ds.ending)
+            event_time_formatstr = "{begin:%Y-%m-%dT%H:%M:%S}{utc_code}/{end:%Y-%m-%dT%H:%M:%S}{utc_code}"
+            utc_code = 'Z' if self.sos_type.lower() == 'ndbc' else None
+            if station['starting'] is not None and station['ending'] is not None:
+                event_time = event_time_formatstr.format(
+                    begin=station['ending'] - timedelta(hours=self.getobs_req_hours), end=station['ending'],
+                    utc_code=utc_code)
                 if self.verbose:
                     self.log.write(u"\nUsing starting/ending times from SensorML for eventTime")
                     print("Using starting/ending times from SensorML for eventTime")
-                    self.log.write(u"\nobservationTimeRange: starting: {start}, ending: {end}".format(start=ds.starting, end=ds.ending))
-                    print("observationTimeRange: starting: {start}, ending: {end}".format(start=ds.starting, end=ds.ending))
-
+                    self.log.write(u"\nobservationTimeRange: starting: {start}, ending: {end}".format(
+                        start=station['starting'], end=station['ending']))
+                    print("observationTimeRange: starting: {start}, ending: {end}".format(
+                        start=station['starting'], end=station['ending']))
             else:
                 now = datetime.now(pytz.utc)
                 then = now - timedelta(hours=self.getobs_req_hours)
-                event_time = "{begin:%Y-%m-%dT%H:%M:%S}/{end:%Y-%m-%dT%H:%M:%S}".format(begin=then, end=now)
+                event_time = event_time_formatstr.format(begin=then, end=now, utc_code=utc_code)
                 if self.verbose:
                     self.log.write(u"\nNo 'observationTimeRange' present in SensorML.  Using present time for eventTime: then: {then:%Y-%m-%dT%H:%M:%S%z}, now: {now:%Y-%m-%dT%H:%M:%S%z}".format(then=then, now=now))
                     print("No 'observationTimeRange' present in SensorML.  Using present time for eventTime: then: {then:%Y-%m-%dT%H:%M:%S%z}, now: {now:%Y-%m-%dT%H:%M:%S%z}".format(then=then, now=now))
@@ -430,9 +447,11 @@ class Sensorml2Iso:
 
             # create a dict to store parameters for valid example GetObservation requests for station:
             getobs_req_dct = {}
-            # populate a parameters dictionary for download links for each 'observedProperty' type and secondly for each 'responseFormat' per observedProperty:
-            getobs_params_base = {'service': 'SOS', 'request': 'GetObservation', 'version': '1.0.0', 'offering': station_urn, 'eventTime': event_time}
-            for variable in ds.variables:
+            # populate a parameters dictionary for download links for each 'observedProperty' type
+            # and secondly for each 'responseFormat' per observedProperty:
+            getobs_params_base = {'service': 'SOS', 'request': 'GetObservation', 'version': '1.0.0',
+                                  'offering': station_urn, 'eventTime': event_time}
+            for variable in station['variable_uris']:
                 getobs_params = getobs_params_base.copy()
                 getobs_params['observedProperty'] = variable
                 variable = variable.split('/')[-1]
@@ -460,8 +479,10 @@ class Sensorml2Iso:
             self.log.write(u"\n\n\nSOS DescribeSensor request errors recap.  Failed requests:")
             print("SOS DescribeSensor request errors recap.  Failed requests:")
             for station_fail, msg in iteritems(sml_errors):
-                self.log.write(u"\n{station} - {msg}.  DescribeSensor URL: {ds}".format(station=station_fail, msg=msg, ds=describe_sensor_url[station_fail].replace("&amp;", "&")))
-                print("{station} - {msg}.  DescribeSensor URL: {ds}".format(station=station_fail, msg=msg, ds=describe_sensor_url[station_fail].replace("&amp;", "&")))
+                self.log.write(u"\n{station} - {msg}.  DescribeSensor URL: {ds}".format(
+                    station=station_fail, msg=msg, ds=describe_sensor_url[station_fail].replace("&amp;", "&")))
+                print("{station} - {msg}.  DescribeSensor URL: {ds}".format(
+                    station=station_fail, msg=msg, ds=describe_sensor_url[station_fail].replace("&amp;", "&")))
             if failures:
                 self.log.write(u"\nStations in 'failures' list (should match DescribeSensor errors):")
                 print("Stations in 'failures' list (should match DescribeSensor errors):")
@@ -527,7 +548,8 @@ class Sensorml2Iso:
             ctx['download_formats'] = station.download_formats
             ctx['getobs_req_dct'] = station.getobs_req_dct
 
-            output_filename = os.path.join(self.output_directory, "{serverName}-{station}.xml".format(serverName=self.server_name, station=station.station_urn.replace(":", "_")))
+            output_filename = os.path.join(self.output_directory, "{serverName}-{station}.xml".format(
+                serverName=self.server_name, station=station.station_urn.replace(":", "_")))
             try:
                 iso_xml = template.render(ctx)
                 output_file = io.open(output_filename, mode='wt', encoding='utf8')
@@ -551,13 +573,15 @@ class Sensorml2Iso:
         """
         # generate a DescribeSensor request to include in the ISO output (lifted from OWSlib):
         try:
-            base_url = next((m.get('url') for m in sos.getOperationByName('DescribeSensor').methods if m.get('type').lower() == "get"))
+            base_url = next((m.get('url') for m in sos.getOperationByName('DescribeSensor').methods
+                             if m.get('type').lower() == "get"))
         except StopIteration:
             base_url = sos.url
 
         if not base_url.endswith("?"):
                 base_url = base_url + "?"
-        params = {'service': 'SOS', 'version': sos.version, 'request': 'DescribeSensor', 'procedure': procedure, 'outputFormat': oFrmt}
+        params = {'service': 'SOS', 'version': sos.version, 'request': 'DescribeSensor',
+                  'procedure': procedure, 'outputFormat': oFrmt}
         return base_url + unquote_plus(urlencode(params))
 
     def create_output_dir(self):
