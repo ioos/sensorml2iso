@@ -421,7 +421,7 @@ class Sensorml2Iso:
 
             # calculate event_time using self.getobs_req_hours:
             event_time_formatstr = "{begin:%Y-%m-%dT%H:%M:%S}{utc_code}/{end:%Y-%m-%dT%H:%M:%S}{utc_code}"
-            utc_code = 'Z' if self.sos_type.lower() == 'ndbc' else None
+            utc_code = 'Z' if self.sos_type.lower() == 'ndbc' else ''
             if station['starting'] is not None and station['ending'] is not None:
                 event_time = event_time_formatstr.format(
                     begin=station['ending'] - timedelta(hours=self.getobs_req_hours), end=station['ending'],
