@@ -1,6 +1,7 @@
 [
     {
         "service": "http://sdf.ndbc.noaa.gov/sos/server.php",
+        "sos_type": "ndbc",
         "output_dir": "/srv/iso/ndbc",
         "response_formats": [
             "text/csv",
