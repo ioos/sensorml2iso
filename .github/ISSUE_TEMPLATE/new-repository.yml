@@ -5,7 +5,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Complete the form fields below with information about the repository you're requesting to create.  This information is needed so that we can determine whether the repository belongs under the IOOS Organization and to prevent unnecessary repository proliferation.  
+        Complete the form fields below describing your proposed repository.  Enter an appropriate issue title (e.g. 'Create cool-ioos-project repo').
 
   - type: input
     id: repo-name
@@ -20,7 +20,7 @@ body:
     attributes:
       label: Repository purpose
       description: |
-        Please describe in a few sentences why this repository is approrpriate for the IOOS GitHub Organization.  A few questions for consideration: does it relate to an IOOS project, is it being developed by IOOS personnel or partners, does it add to or compliment existing IOOS packages or modules?  If the answer is yes, then it likely belongs here - just tell us why.
+        Please describe in a few sentences why this repository is approrpriate for the IOOS GitHub Organization.  A few questions for consideration: does it relate to an IOOS project, is it being developed by IOOS personnel or partners, does it add to or compliment existing IOOS packages or modules?  If the answer is yes to any of these questions, then it likely belongs here - just tell us why.
     validations:
       required: true
 
@@ -29,7 +29,7 @@ body:
     attributes:
       label: Repository description
       description: |
-        Provide a description of the repository for public display (this will be entered into the corresponding field if the repository is accepted and created).
+        Provide a public description of the repository (this will be entered into the corresponding repository description field if accepted).
     validations:
       required: true
      
@@ -63,7 +63,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        ### Optional information
+        ## Optional information
   
   - type: checkboxes
     id: repo-options
@@ -80,6 +80,6 @@ body:
     attributes:
       label: Specify a .gitignore file type
       description: If the repository should have a .gitignore file, choose from the .gitignore language/file types listed [here](https://github.com/github/gitignore).  
-      placeholder: <enter .gitignore file type>
+      placeholder: <enter .gitignore file type (e.g. Python.gitignore)>
           
   
