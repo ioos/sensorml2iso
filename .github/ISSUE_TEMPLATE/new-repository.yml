@@ -42,7 +42,9 @@ body:
       options:
         - Public
         - Private
-      
+    validations:
+      required: true      
+
   - type: dropdown
     id: repo-license
     attributes:
@@ -55,11 +57,13 @@ body:
         - Apache License 2.0
         - GNU General Public License v2.0
         - MIT License
+    validations:
+      required: true
       
   - type: markdown
     attributes:
       value: |
-        ###More repo information
+        ### Optional information
   
   - type: checkboxes
     id: repo-options
@@ -74,7 +78,7 @@ body:
   - type: input
     id: repo-gitignore-type
     attributes:
-      label: Specify a .gitignore file type.
+      label: Specify a .gitignore file type
       description: If the repository should have a .gitignore file, choose from the .gitignore language/file types listed [here](https://github.com/github/gitignore).  
       placeholder: <enter .gitignore file type>
           
